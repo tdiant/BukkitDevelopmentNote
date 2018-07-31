@@ -1,0 +1,55 @@
+{
+    "title": "Bukkit插件开发笔记",
+    "author": "tdiant",
+    "language": "zh-hans",
+    "gitbook": ">=3.0.0",
+    "links": {
+        "sidebar": {
+            "tdiant's blog": "http://blog.tdiant.net"
+        }
+    },
+    "styles": {
+        "website": "styles/website.css"
+    },
+    "plugins": [
+        "-lunr",
+        "-search",
+        "-sharing",
+        "search-plus",
+        "anchors",
+        "anchor-navigation-ex"
+    ],
+    "pluginsConfig": {
+        "simple-page-toc": {
+            "maxDepth": 3,
+            "skipFirstH1": false
+        },
+        "anchor-navigation-ex": {
+            "showLevel": true,
+            "associatedWithSummary": true,
+            "printLog": false,
+            "multipleH1": true,
+            "mode": "float",
+            "float": {
+                "showLevelIcon": false,
+                "level1Icon": "fafa-hand-o-right",
+                "level2Icon": "fafa-hand-o-right",
+                "level3Icon": "fafa-hand-o-right"
+            },
+            "pageTop": {
+                "showLevelIcon": false,
+                "level1Icon": "fafa-hand-o-right",
+                "level2Icon": "fafa-hand-o-right",
+                "level3Icon": "fafa-hand-o-right"
+            }
+        },
+		"sectionx": {
+          "tag": "b"
+        },
+		"include-codeblock": {
+            "template": "ace",
+            "unindent": true,
+            "theme": "monokai"
+        }
+    }
+}
