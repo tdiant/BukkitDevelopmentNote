@@ -1,11 +1,12 @@
 {
-    "title": "Bukkit插件开发笔记",
+    "title": "Bukkit插件开发笔记-基础篇",
     "author": "tdiant",
     "language": "zh-hans",
     "gitbook": ">=3.0.0",
     "links": {
         "sidebar": {
-            "tdiant's blog": "http://blog.tdiant.net"
+            "tdiant's blog": "https://blog.tdiant.net",
+			"本篇": "https://bdn.tdiant.net"
         }
     },
     "styles": {
