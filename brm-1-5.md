@@ -69,4 +69,22 @@ d: '""' #这是字符串, 内容是一对英文双引号
 e: "''" #这是字符串, 内容是一对英文单引号
 ```
 
-回到第一份YAML配置内容中.   
+# 感受配置API的使用
+在后面的内容中, 将详细叙述配置API的使用方式. 在这里, 通过一个实例来感受配置API的使用方式.
+
+首先我们需要创建`config.yml`文件. 默认的`config.yml`文件要与`plugin.yml`文件处于同一目录下. 在这里我们在默认`config.yml`文件中存入这些信息:  
+```
+a: 1
+```
+完成后, 我们需在`onEnable`方法中插入这样的语句:
+```
+saveDefaultConfig(); //我建议这个东西写在主类onEnable方法开头那里或者onLoad方法里
+
+System.out.println("Hello! Test Number is "+getConfig().getInt("a")); //输出文件
+```  
+插件加载后, 可以发现控制台输出:
+```
+Hello! Test Number is 1
+```
+
+在plugins文件夹中生成了以插件名为名的文件夹, 打开该文件夹里的config.yml文件, 并将其中的`a`键改为其他整数后使用reload指令, 可以显示该数值.
