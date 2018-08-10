@@ -1,32 +1,90 @@
-<p style="font-size:24px;">对象化的MC</p>
-Java是一个面向对象的语言. 俗话说得好, Java里万物皆对象.  
-事实上, BukkitAPI下的MC世界, 正是一个由许多对象构成的世界.   
-下面简述几个常用的类型. BukkitAPI中还有更多的类型. 这只是冰山一角.   
+# 认识配置文件
 
-# 玩家(Player)  
-服务器内的每一个玩家都有一个Player对象.  
-如果你想获取这样的一个对象, 例如, 玩家PlayerName的Player对象, 你可以这样获取：  
+## 配置文件
+配置文件用来储存配置信息, 以便使用文件开关功能、储存数据、修改信息.  
+我们往往需要读写配置文件. Bukkit为我们提供了配置API.   
+
+## 配置API
+配置API是BukkitAPI提供的读写配置文件的工具. 其相对而言较为简单, 是插件开发中常用的API.  
+
+目前为止, 配置API只有YAML配置功能可用. 这也是大多数插件为什么配置文件是YAML文件的原因.  
+在本文中, 我们也将使用YAML配置API.   
+
+*现在的配置API的类均在 `org.bukkit.configuration` 和 `org.bukkit.configuration.file` 包中. 在早期版本(MC 1.1以及之前), 这些东西都在`org.bukkit.util.configuration`包, 而并非上面的这两个包.*   
+
+# 了解YAML文件
+
+相信开服的经验已经使你对YAML文件有了初步认识.  
+YAML文件的文件后缀是`.yml`. 其配置文件结构需要严格遵守YAML标准.  
+
+下面即是一个符合标准的YAML配置文件的内容:  
+~~~
+a: 1
+b: "abc"
+c: abc
+d:
+  e: true
+  f: 666.233
+  g:
+  - '2333'
+  - '998'
+~~~
+
+在本节中, 我们暂不学习如何使用配置API读写配置文件. 首先对YAML配置文件做简单了解.    
+
+第一行 `a: 1` 代表`a`键(Key)对应的值(Value)为`1`.  
+在读写YAML配置文件时, 需要知道键, 由键获取这个键对应的数据.  
+
+在d键中, 存在e、f、g三个子键, 相信你可以**根据空格看出来谁是谁的子键**, 其对应的名称分别为`d.e`、`d.f`、`d.g`.  
+也就是说, 我们想获取那个现在值为`true`的键对应的数据, 应该获取键`d.e`的数据.
+
+子键也可以有其子键, 例如:
 ```
-Bukkit.getPlayerExact("PlayerName");  
+a:
+  b:
+    c:
+	  d:
+	    e:
+		  f:
+		    g: 233
+```
+那么`a.b.c.d.e.f.g`键的值为`233`.  
+
+回到第一份YAML配置内容中.  
+`a`键对应的值是`1`, `1`可以代表是一个数字, 也可以代表是一个字符串.  
+这意味着, 字符串在一些情况下可以不必带有引号.  
+*那我在实际使用配置API的时候获取到的`a`键值究竟是什么类型? 具体会在后面提及.*  
+
+`d.e`键对应的值是一个boolean类型数据.  
+`d.g`键对应的是一个StringList类型数据.
+
+YAML中字符串可以用双引号表示, 也可以使用单引号表示, 但是不能一半是双引号, 一半是单引号.  
+YAML中注释使用#, 类似Java中的//, 请看下面的实例:
+```
+#我是注释
+a: 'abc' #这是一个字符串abc
+b: "def" #用双引号也可以
+c: 'hji" #这样不可以
+d: '""' #这是字符串, 内容是一对英文双引号
+e: "''" #这是字符串, 内容是一对英文单引号
 ```
 
-> 如果你翻看API, 你会发现存在`Bukkit.getPlayer("PlayerName");`这样的方法来获取.   
-> 但是这个方法会“模糊地”获取玩家.    
-> 假如服务器内有abc和ab这两个玩家, 如果你想获取abc的Player对象, 万一abc不在线, 你Bukkit.getPlayer("abc");返回的Player对象, 很有可能是ab的, 而不是abc的.   
-  
-# 实体(Entity)  
-在MC中, 所有的生物, 例如一只羊, 乃至一个僵尸, 又或者是玩家, 都是生物, 他们都是Entity类型的对象.   
-这个概念还可以更加进一步的扩充, 一个被点燃的TNT, 实际上, 它也是一个实体(TNTPrimed).   
-  
-# Material、ItemStack  
-在Bukkit当中, 存在一个Enum(枚举)类型的`Material`, `Material`中含有各种物品和方块的种类.  
-值得注意的是, 某些物品的Material和该物品放置后的方块的Material不同.  
+# 感受配置API的使用
+在后面的内容中, 将详细叙述配置API的使用方式. 在这里, 通过一个实例来感受配置API的使用方式.
 
-例如, MC中一个苹果的种类是`Material.APPLE`; 石头方块的种类是`Material.STONE`;  
+首先我们需要创建`config.yml`文件. 默认的`config.yml`文件要与`plugin.yml`文件处于同一目录下. 在这里我们在默认`config.yml`文件中存入这些信息:  
+```
+a: 1
+```
+完成后, 我们需在`onEnable`方法中插入这样的语句:
+```
+saveDefaultConfig(); //我建议这个东西写在主类onEnable方法开头那里或者onLoad方法里
 
-特殊的是, 某些物品与其对应的方块Material不一致, 例如红石比较器.  
-红石比较器**物品**的种类是`Material.REDSTONE_COMPARATOR`, 而放置后的**方块种类**又分为`Material.REDSTONE_COMPARATOR_ON`(开启状态), `Material.REDSTONE_COMPARATOR_OFF`(关闭状态)两种, 红石比较器方块的种类不能用`Material.REDSTONE_COMPARATOR`来表示.
+System.out.println("Hello! Test Number is "+getConfig().getInt("a")); //输出文件
+```  
+插件加载后, 可以发现控制台输出:
+```
+Hello! Test Number is 1
+```
 
-ItemStack用于反应一种描述物品堆叠的方式.  
-一个ItemStack的实例, 囊括了物品的种类（其对应的Material）和数量等信息.  
-例如, 玩家手中拿着三个苹果. 玩家手中的这三个苹果, 实质上是一个ItemStack, 它包括了这三个苹果的种类（Material.APPLE）、数量（3）与其他的一些信息. 
+在plugins文件夹中生成了以插件名为名的文件夹, 打开该文件夹里的config.yml文件, 并将其中的`a`键改为其他整数后使用reload指令, 可以显示该数值.

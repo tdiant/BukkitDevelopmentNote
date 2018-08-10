@@ -1,199 +1,92 @@
-<p style="font-size:24px;">深入配置API</p>
-# 基本用法(操作config.yml)
-## 默认配置文件
-每个插件都可以有一个`config.yml`文件作为其配置文件.  
-我们首先需要准备一份默认配置文件, 也就是插件放进`plugins`文件夹后第一次被加载自动生成的配置文件.  
+<p style="font-size:24px;">深入plugin.yml</p>
 
-首先我们需要创建`config.yml`文件. 默认的`config.yml`文件要与`plugin.yml`文件处于同一目录下. 在这里我们在默认`config.yml`文件中存入这些信息:  
-```
-a: 1
-b: "abc"
-c: abc
-d:
-  e: true
-  f: 666.233
-  g:
-  - '2333'
-  - '998'
-```
-完成后, 我们需在`onEnable`方法中插入这样的语句:
-```
-saveDefaultConfig(); //我建议这个东西写在主类onEnable方法开头那里或者onLoad方法里
-```
-该语句需要保证在读写配置文件之前被执行.  
-它可以自动判断插件配置文件夹中是否存在`config.yml`文件, 在没有的时候将该插件jar文件的根目录中`config.yml`保存至插件配置文件夹.
+# 了解plugin.yml
+`plugin.yml`文件是Bukkit及其衍生服务端识别插件的重要文件.  
 
-## 写入配置文件
-让我们尝试写入配置文件, 在`onEnable`方法被调用时把配置文件中键`h`改为字符串`baka`.  
-我们可以这样做:
+在服务端加载插件时, 服务端加载完毕Jar文件后做的第一件事就是读取该Jar文件的`plugin.yml`文件.  
+如果把任一可正常工作的插件的Jar文件用相应的ZIP压缩软件打开, 删除`plugin.yml`文件后再启动服务端, 会抛出错误.  
+```  
+Could not load 'plugins\[YOUR_PLUGIN].jar' in folder 'plugins'  
+org.bukkit.plugin.InvalidDescriptionException: Invalid plugin.yml  
 ```
-public void onEnable(){
-    this.saveDefaultConfig();
-	this.getConfig().set("h","baka");
-	this.saveConfig();
-}
+可发现, 服务端将会因为没有`plugin.yml`文件而抛出`InvalidDescriptionException`错误.  
+
+<br><br>
+在`plugin.yml`文件中, 目前我们已知的有`name`、`version`、`main`、`author`四个项目可以设置.  
+事实上, `plugin.yml`文件中还有许多可以设置的项目, 部分项目是本节的内容, 其余可以在spigotmc的官方文档中查阅到.  
+> 目前(2018.7.28)BukkitAPI主要由SpigotMC维护, 因此大量的BukkitAPI文档都在 SpigotMC 网站上.  
+> 有关plugin.yml文件的官方文档在这里:  
+> https://www.spigotmc.org/wiki/plugin-yml/  
+
+# 必要设置项
+`plugin.yml`文件中, `name`、`main`、`version`三项必须存在.  
+*这也意味着, 前面的实例中, 我们使用的`plugin.yml`文件, 删去`author`键仍可被服务端正常加载.*  
+
+不妨来认识一下这三个设置项.
+
+## name
+顾名思义, 它定义了插件的名称.  
+
+对于名称, 官方WIKI中给出了严格的要求, 即只能由 **英文小写或大写字符、阿拉伯数字或下划线** 构成. 决不能出现中文字符、空格等.  
+在后续生成插件配置文件夹时, 该项设置的插件名将会是插件配置文件夹的名称.  
+
+起名的时候应该注意, 尽可能起一个“个性”的名称, 防止与其他插件重名.
+
+## version
+指插件的版本号.  
+该键理论上可以在后面填写任意String内容. 但是官方WIKI要求尽可能使用X.X.X格式的版本号表示(例如: 2.3.3).  
+
+## main
+指插件的主类名.  
+
+在插件中, 主类有且只有一个, 且需要继承`JavaPlugin`类. 主类是插件的“入口”, 这里的`main`即意在说明主类的名称.  
+这里需填写主类的全名, 也就是精确到主类所在的具体包. 说白了就是不只是需要把主类名带上, 还要把包名带上.
+
+# 可选设置项
+`plugin.yml`文件只需要存在必要设置项的三个键即可.  
+下面的键可选, 可有可无. 但有一些在一些特定的情况下必须要有.
+
+## 依赖
+有时候你的插件可能需要调用`Vault`（用来获取玩家货币余额）或其他的插件, 即依赖其他插件.   
+这时候需要在`plugin.yml`文件中进行设置告知服务端, 从而保证所依赖的插件在本插件之前被加载.   
+
+你可以在`plugin.yml`文件中加入`depend`键或`softdepend`键来控制依赖.  
+
+`depend`键或`softdepend`键接的值必须是数组. 例如这样:
 ```
-执行后可发现, 插件配置文件夹中`config.yml`文件的`h`键内容已经成为`baka`.  
-`set`以后要记得`saveConfig`!
-
-## 读取配置文件中数据
-我们可以使用`get`来读取数据.
+depend: [Vault, WorldEdit]
+softdepend: [Essentials]
 ```
-public void onEnable(){
-    this.saveDefaultConfig();
-	System.out.println(getConfig().get("a"));  //这里的get方法返回Object类型数据
-}
+两个键设置的内容区别如下：  
+1. depend: 插件强制要求的依赖. 如果没有这个插件, 该插件将无法正常工作, Bukkit此时会抛出相应错误.  
+2. softdepend: 插件不强制要求的插件. 如果服务端内没有这个插件, 插件仍可正常工作.
+
+后面设置的数组内的内容都是所依赖插件的名称, 此处名称应与所依赖的插件的`plugin.yml`文件的`name`键的值相同.
+
+## loadbefore
+`depend`与`softdepend`可以实现插件在某个插件之后加载. 但也许有时你的插件可能需要实现在某个插件之前被加载.  
+此时你可以使用`loadbefore`设置, 用法类似. 例如:
 ```
-后台将`a`键的值, 也就是将会输出`1`.
-
-对于不同的数据, 配置API给出了不同的get方法. 例如 `getString`、`getBoolean`、`getDouble`、`getInt`等.  
-
-还记得前面的那个"类型问题"吗? `a`键的值究竟是什么数据类型呢?   
-答案已经揭晓, 取决于你使用的是哪个get方法. 如果使用`getString`获取`a`键的值, 那么获取到的将是`String`类型, 如果是`getInt`, 那么就是`int`类型, 如果是`getDouble`, 那么就是`double`类型......
-
-对于`d.g`键, 其内容这样获取:
-```
-List<String> list = getConfig().getStringList("d.g");
-```
-
-## 在其他类中操作配置文件
-我们已经知道如何注册监听器. 那么我们免不了遇到在其他类中操作配置文件的情况.  
-然而你会发现, `getConfig`方法并不是static(静态)的. 我们不能直接在其他类操作配置文件.    
-
-如果你有一些Java开发常识, 此时你可能意识到了, 我们需要做一个静态的主类实例才行.  
-在这里赘述一种我自己喜欢用的方式. 这是一个经过处理的主类, 有两处需要注意:  
-```
-public class HelloWorld extends JavaPlugin{
-    private static HelloWorld INSTANCE;
-	
-	public void onEnable(){
-	    INSTANCE = this; //这个推荐放在最最最开头
-		......
-
-    ......
-	
-	public static HelloWorld getInstance(){
-	    return INSTANCE;
-	}
-}
+loadbefore: [Essentials, WorldEdit]
 ```
 
-然后你就可以在其他类中这样操作配置文件:
-```
-HelloWorld.getInstance().getConfig().你要做的各种操作
-HelloWorld.getInstance().saveConfig(); //写入配置文件内容了以后记得保存!
-```
-# 操作自定义的配置文件
-关于非`config.yml`的YAML文件的操作, 有很多种方式可以做到.  
-下文叙述的是其中的一种.
+在上面的例子中, 可保证插件在WorldEdit与Essentials插件之前被加载.
 
-## 默认配置文件
-我们还是需要像`config.yml`那样准备一份默认配置文件, 放在与plugin.yml相同目录下. 不同的是, 除了`saveDefaultConfig`以外, 我们还需要其他的代码来保存默认配置文件.  
+## commands
+如果你的插件定义了新指令, 你第一步就需要设置该项告知服务端.  
+在后面还将继续深入该项. 此处仅做示范:
+```
+commands:
+  test:
+    description: "Hello World!"
+```
+这可以告知服务端注册了指令`test`, 并且描述为`Hello World!`字符串, 该描述字符串将会在`/help`指令中被显示.  
 
-例如我们有`config.yml`和`biu.yml`两个配置文件, 插件加载时应该这样生成默认配置文件:  
+## author与authors
+此处不再赘述其作用.  如果你想表示多名作者, 你可以设置`authors`项, 值需为一个数组.
 ```
-this.saveDefaultConfig(); //生成默认config.yml
-this.saveResource("biu.yml", false); //生成默认biu.yml
+authors: [tdiant, Seraph_JACK]
 ```
-*`saveResource`方法的第一个参数是文件名, 第二个参数是是否覆盖, 设置成false可以达到saveDefaultConfig的效果.*  
+如果同时存在`author`与`authors`, 将忽略`author`.
 
-同理,利用`saveResource`可以生成你想生成的默认的非`config.yml`的配置文件.
-
-## 基本读写与保存
-下面是一个读写与保存的示例:
-```
-//读取
-//this.getDataFolder()方法返回插件配置文件夹的File对象
-File biuConfigFile = new File(this.getDataFolder(), "biu.yml");
-FileConfiguration biuConfig = YamlConfiguration.loadConfiguration(biuConfigFile);
-biuConfigFile.get.......
-biuConfigFile.set....... //set完了记得保存!
-//保存
-biuConfig.save(biuConfigFile);
-```
-
-# 序列化
-## 了解序列化
-如果我自己做了一个类型, 例如下面的`BakaRua`类:
-```
-public class BakaRua{
-    public String name;
-	public String str;
-
-    public BakaRua(String name, String str){
-	    this.name = name;
-		this.str = str;
-	}
-}
-```
-现在我们新建一个BakaRua对象:  
-`BakaRua test = new BakaRua("tdiant", "hello!!");`  
-我们想把test保存在配置文件里怎么办?  
-很遗憾,`getConfig().set("demo",test);`是行不通的.
-
-> 哪些东西可以直接set保存呢?
-> 类似getInt, 所有拥有get方法的类型都可以直接保存. (包括List<String>)
->   
-> 还有一些BukkitAPI给的类型, 例如ItemStack. 但不是全部都是这样.  
-> 如果你想判断一个类型是不是可以直接set, 你可以在JavaDoc中找到它, 看它是否实现了ConfigurationSerializable类.
-
-你可能想到了最简单粗暴的办法:
-```
-//这样set
-getConfig().set("demo.name",test.name);
-getConfig().set("demo.str",test.str);
-//然后保存, 用的时候这样
-getConfig().getString("demo.name");
-getConfig().getString("demo.str");
-```
-
-这的确是一种切实可行的办法. 但是这真的是太麻烦了. 有没有一种方法直接set test这个对象, 直接get就得到这个对象的办法呢? 有! 你可以使用序列化和反序列化实现它!
-
-## 让自定义类型实现序列化与反序列化
-以上文`BiuRua`为例. 首先让他实现`ConfigurationSerializable`, 并添加`deserialize`方法. 如下:
-```
-public class BakaRua implements ConfigurationSerializable {
-    public String name;
-	public String str;
-
-    public BakaRua(String name, String str){
-	    this.name = name;
-		this.str = str;
-	}
-	
-	@Override
-	public Map<String,Object> serialize() {
-	    Map<String,Object> map = new HashMap<String,Object>();
-		return map;
-	}
-	
-	public static BakaRua deserialize(Map<String,Object> map){
-	    
-	}
-}
-```
-然后继续完善`serialize`, 实现序列化. 我们只需要把需要保存的数据写入map当中即可.  
-注意, 需要保存的数据要保证可以直接set, 不能则也需要为他实现序列化与反序列化.  
-```
-	@Override
-	public Map<String,Object> serialize() {
-	    Map<String,Object> map = new HashMap<String,Object>();
-		map.put("name",name);
-		map.put("str",str);
-	    return map;
-	}
-```
-序列化后, 数据即可直接set进配置文件里. 为了实现直接get的目的, 还需要进行反序列化.  
-```
-	public static BakaRua deserialize(Map<String,Object> map){
-	    return new BakaRua(
-		    (map.get("name")!=null?(String)map.get("name"):null),
-			(map.get("str")!=null?(String)map.get("str"):null)
-		);
-	}
-```
-编写完毕后, 我们需要像注册监听器一样, 注册序列化. 在`onEnable`中加入如下语句:
-```
-ConfigurationSerialization.registerClass(BiuRua.class);
-```
-至此, 你就可以自由地对一个自定义的对象直接地get和set了!
+## 

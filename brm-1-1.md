@@ -1,18 +1,22 @@
-<p style="font-size:24px;">HelloWorld插件</p>
+<p style="font-size:24px;">最简单的插件</p>
 
-`Hello World`是一个“梗”. 编写一个`HelloWorld`插件即编写一个功能简单的插件, 来了解开发插件应该从何下手.  
-
-Bukkit插件本质是一个基于BukkitAPI的Java应用. 但Bukkit插件有下面三个特征：  
+# Bukkit插件的本质
+Bukkit插件本质是一个基于BukkitAPI的Java应用.  
+但Bukkit插件有下面三个特征：  
 1. 插件成品文件格式为jar.    
 2. 插件jar文件根目录须有一名为 `plugin.yml` 且符合规范的文件.    
 3. 插件内须有且仅有一个类继承 `org.bukkit.plugin.java.JavaPlugin` 类, 这个类将作为插件的主类.    
 
-不妨做一个HelloWorld插件来感受一下.    
+# 简单的插件
+在编写自己想做的插件之前, 不妨做一个简单的插件来了解一下Bukkit插件如何编写.    
+一个最简单的插件大致应分为两步编写:  
+1. 编写主类  
+2. 编写plugin.yml文件  
 
-新建一个Java工程, 创建`tdiant.helloworld.HelloWorld`类作为插件的主类并继承`JavaPlugin`类.  
-主类的名称并不是固定的, 但是plugin.yml文件的名称是固定的.     
-  
-在主类里覆写`onEnable`方法和`onDisable`方法. 完成后, 代码应该类似这样：  
+无论是哪个插件, 这两步都是一开始应该去做的, 缺一不可.  
+
+新建一个Java工程, 创建`tdiant.helloworld.HelloWorld`类作为插件的主类, 并继承`JavaPlugin`类.  
+在主类里覆写`onEnable`方法和`onDisable`方法. 完成后, 代码应该类似这样:  
 
 ```
 package tdiant.helloworld;  
@@ -40,10 +44,11 @@ main: tdiant.helloworld.HelloWorld
 version: 1
 author: tdiant
 ```
+*注意: 主类的名称并不是固定的, 但是`plugin.yml`文件的名称是固定的.*     
 
 *对于创建plugin.yml, 如果你 不知道 或者 没有使用Maven或Gradle, 请在src文件夹下直接创建该文件即可, 就像创建一个类一样! 例如在Eclipse中应这样:*  
 ![](https://miao.su/images/2018/08/09/QQ201808091433546bda6.png)  
-  
+
 上面的plugin.yml文件逐行分析如下：
 
 | 键 | 意义 | 备注 |
@@ -55,3 +60,5 @@ author: tdiant
   
 在`onEnable`方法中添加相应的`System.out.println("Hello World")` 语句.  
 可以发现, 当插件Jar被正常生成后, 会在控制台输出`Hello World`字符串, 这标志着我们的HelloWorld插件正常工作.  
+
+Bukkit服务端会在插件被加载时调用`onEnable`方法, 被卸载时调用`onDisable`方法.
