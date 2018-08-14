@@ -53,7 +53,7 @@ org.bukkit.plugin.InvalidDescriptionException: Invalid plugin.yml
 你可以在`plugin.yml`文件中加入`depend`键或`softdepend`键来控制依赖.  
 
 `depend`键或`softdepend`键接的值必须是数组. 例如这样:
-```
+```yaml
 depend: [Vault, WorldEdit]
 softdepend: [Essentials]
 ```
@@ -66,7 +66,7 @@ softdepend: [Essentials]
 ## loadbefore
 `depend`与`softdepend`可以实现插件在某个插件之后加载. 但也许有时你的插件可能需要实现在某个插件之前被加载.  
 此时你可以使用`loadbefore`设置, 用法类似. 例如:
-```
+```yaml
 loadbefore: [Essentials, WorldEdit]
 ```
 
@@ -75,7 +75,7 @@ loadbefore: [Essentials, WorldEdit]
 ## commands
 如果你的插件定义了新指令, 你第一步就需要设置该项告知服务端.  
 在后面还将继续深入该项. 此处仅做示范:
-```
+```yaml
 commands:
   test:
     description: "Hello World!"
@@ -84,7 +84,7 @@ commands:
 
 ## author与authors
 此处不再赘述其作用.  如果你想表示多名作者, 你可以设置`authors`项, 值需为一个数组.
-```
+```yaml
 authors: [tdiant, Seraph_JACK]
 ```
 如果同时存在`author`与`authors`, 将忽略`author`.

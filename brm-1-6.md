@@ -58,7 +58,7 @@ https://github.com/tdiant/BukkitDevelopmentNote/tree/master/source/
 
 ### 基本准备
 首先我们要写好基本的主类和`plugin.yml`, 引入服务端Jar作为Lib. 我这里创建了`StupidLogin`工程作为演示, `plugin.yml`目前设置了`name` `version` `main` `author`, 主类目前如下:  
-```
+```java
 package tdiant.bukkit.stupidlogin;
 
 public class StupidLogin extends JavaPlugin {
@@ -91,7 +91,7 @@ public class StupidLogin extends JavaPlugin {
 LoginManager有 查询玩家是否登录、查询是否注册、注册玩家账号、修改是否登录的状态、查询字符串与玩家密码是否一致 的五个功能.  
 
 首先先写出基本的结构, 把构思中的 未登录玩家 的List写出:  
-```
+```java
 public class LoginManager {
 	private static List<String> unloginList = new ArrayList<>();
 
@@ -112,7 +112,7 @@ public class LoginManager {
 ```
 
 然后再写出与配置文件有关的三个方法:
-```
+```java
 	//判断玩家是否注册账号
 	public static boolean isRegister(String playerName) {
 	    //如果配置文件里有  player_data.玩家名  这个键就代表已经注册
@@ -145,7 +145,7 @@ public class LoginManager {
 然后编写监听器.
 
 首先先编写`PlayerLimitListener`, 用以禁止 玩家未登录时做的操作 ,并且在玩家登录和退出服务器时把玩家加进 未登录玩家 List 里.  
-```
+```java
 package tdiant.bukkit.stupidlogin.listener;
 
 import org.bukkit.event.EventHandler;
@@ -200,7 +200,7 @@ public class PlayerLimitListener implements Listener {
 ```
 
 为了体现我们的友♂好, 在玩家上线时给玩家发一个提示:  
-```
+```java
 package tdiant.bukkit.stupidlogin.listener;
 
 import org.bukkit.event.EventHandler;
@@ -210,17 +210,15 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import tdiant.bukkit.stupidlogin.LoginManager;
 
 public class PlayerTipListener implements Listener {
-	
 	//玩家进入服务器后的“请您登录”提示语
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		e.getPlayer().sendMessage(
-					LoginManager.isRegister(e.getPlayer().getName())?
-							"欢迎回来！请输入/login 密码 登录服务器！":
-							"欢迎第一次来到本服务器！请输入/register 密码 注册账号！"
-				);
+			LoginManager.isRegister(e.getPlayer().getName()) ?
+			"欢迎回来！请输入/login 密码 登录服务器！" :
+			"欢迎第一次来到本服务器！请输入/register 密码 注册账号！"
+		);
 	}
-
 }
 ```
 
@@ -230,7 +228,7 @@ public class PlayerTipListener implements Listener {
 在这里我会将login指令和register指令都放在这一个`CommandExecutor`里.  
 
 对了, 要养成整理整齐`onCommand`方法的好习惯哦!
-```
+```java
 package tdiant.bukkit.stupidlogin.command;
 
 import org.bukkit.ChatColor;
@@ -311,7 +309,7 @@ public class PlayerLoginCommand implements Listener, CommandExecutor {
 ### 在主类和plugin.yml注册
 我们需要把监听器和命令在主类和`plugin.yml`中进行注册.
 
-```
+```yaml
 name: StupidLogin
 main: tdiant.bukkit.stupidlogin.StupidLogin
 version: 1
@@ -329,17 +327,17 @@ commands:
 在`plugin.yml`中的注册需要注意**不能出现中文, 请全英文**! 编码推荐UTF-8.
 
 然后就是在主类注册一下了! `onEnable`方法内添加:  
-```
-		//Configuration
-		this.saveDefaultConfig();  //输出默认配置
-		//Listener
-		Bukkit.getPluginManager().registerEvents(new PlayerLimitListener(), this);  //注册监听器
-		Bukkit.getPluginManager().registerEvents(new PlayerLoginCommand(), this);
-		Bukkit.getPluginManager().registerEvents(new PlayerTipListener(), this);
-		//Commands
-		CommandExecutor ce = new PlayerLoginCommand();  //注册指令，这里两个指令公用同一个Executor
-		Bukkit.getPluginCommand("login").setExecutor(ce);
-		Bukkit.getPluginCommand("register").setExecutor(ce);
+```java
+//Configuration
+this.saveDefaultConfig();  //输出默认配置
+//Listener
+Bukkit.getPluginManager().registerEvents(new PlayerLimitListener(), this);  //注册监听器
+Bukkit.getPluginManager().registerEvents(new PlayerLoginCommand(), this);
+Bukkit.getPluginManager().registerEvents(new PlayerTipListener(), this);
+//Commands
+CommandExecutor ce = new PlayerLoginCommand();  //注册指令，这里两个指令公用同一个Executor
+Bukkit.getPluginCommand("login").setExecutor(ce);
+Bukkit.getPluginCommand("register").setExecutor(ce);
 ```
 
 ### 后记

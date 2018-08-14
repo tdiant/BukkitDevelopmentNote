@@ -6,7 +6,7 @@ Java是一个面向对象的语言. 俗话说得好, Java里万物皆对象.
 # 玩家(Player)  
 服务器内的每一个玩家都有一个Player对象.  
 如果你想获取这样的一个对象, 例如, 玩家PlayerName的Player对象, 你可以这样获取：  
-```
+```java
 Bukkit.getPlayerExact("PlayerName");  
 ```
 
