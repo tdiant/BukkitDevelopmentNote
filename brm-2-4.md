@@ -5,7 +5,7 @@
 我们首先需要准备一份默认配置文件, 也就是插件放进`plugins`文件夹后第一次被加载自动生成的配置文件.  
 
 首先我们需要创建`config.yml`文件. 默认的`config.yml`文件要与`plugin.yml`文件处于同一目录下. 在这里我们在默认`config.yml`文件中存入这些信息:  
-```
+```yaml
 a: 1
 b: "abc"
 c: abc
@@ -17,7 +17,7 @@ d:
   - '998'
 ```
 完成后, 我们需在`onEnable`方法中插入这样的语句:
-```
+```java
 saveDefaultConfig(); //我建议这个东西写在主类onEnable方法开头那里或者onLoad方法里
 ```
 该语句需要保证在读写配置文件之前被执行.  
@@ -26,9 +26,9 @@ saveDefaultConfig(); //我建议这个东西写在主类onEnable方法开头那�
 ## 写入配置文件
 让我们尝试写入配置文件, 在`onEnable`方法被调用时把配置文件中键`h`改为字符串`baka`.  
 我们可以这样做:
-```
+```java
 public void onEnable(){
-    this.saveDefaultConfig();
+	this.saveDefaultConfig();
 	this.getConfig().set("h","baka");
 	this.saveConfig();
 }
@@ -38,9 +38,9 @@ public void onEnable(){
 
 ## 读取配置文件中数据
 我们可以使用`get`来读取数据.
-```
+```java
 public void onEnable(){
-    this.saveDefaultConfig();
+	this.saveDefaultConfig();
 	System.out.println(getConfig().get("a"));  //这里的get方法返回Object类型数据
 }
 ```
@@ -52,7 +52,7 @@ public void onEnable(){
 答案已经揭晓, 取决于你使用的是哪个get方法. 如果使用`getString`获取`a`键的值, 那么获取到的将是`String`类型, 如果是`getInt`, 那么就是`int`类型, 如果是`getDouble`, 那么就是`double`类型......
 
 对于`d.g`键, 其内容这样获取:
-```
+```java
 List<String> list = getConfig().getStringList("d.g");
 ```
 
@@ -62,24 +62,25 @@ List<String> list = getConfig().getStringList("d.g");
 
 如果你有一些Java开发常识, 此时你可能意识到了, 我们需要做一个静态的主类实例才行.  
 在这里赘述一种我自己喜欢用的方式. 这是一个经过处理的主类, 有两处需要注意:  
-```
+```java
 public class HelloWorld extends JavaPlugin{
-    private static HelloWorld INSTANCE;
-	
+	private static HelloWorld INSTANCE;
+
 	public void onEnable(){
-	    INSTANCE = this; //这个推荐放在最最最开头
+		INSTANCE = this; //这个推荐放在最最最开头
 		......
+	}
 
     ......
-	
+
 	public static HelloWorld getInstance(){
-	    return INSTANCE;
+		return INSTANCE;
 	}
 }
 ```
 
 然后你就可以在其他类中这样操作配置文件:
-```
+```java
 HelloWorld.getInstance().getConfig().你要做的各种操作
 HelloWorld.getInstance().saveConfig(); //写入配置文件内容了以后记得保存!
 ```
@@ -91,7 +92,7 @@ HelloWorld.getInstance().saveConfig(); //写入配置文件内容了以后记得
 我们还是需要像`config.yml`那样准备一份默认配置文件, 放在与plugin.yml相同目录下. 不同的是, 除了`saveDefaultConfig`以外, 我们还需要其他的代码来保存默认配置文件.  
 
 例如我们有`config.yml`和`biu.yml`两个配置文件, 插件加载时应该这样生成默认配置文件:  
-```
+```java
 this.saveDefaultConfig(); //生成默认config.yml
 this.saveResource("biu.yml", false); //生成默认biu.yml
 ```
@@ -101,13 +102,13 @@ this.saveResource("biu.yml", false); //生成默认biu.yml
 
 ## 基本读写与保存
 下面是一个读写与保存的示例:
-```
+```java
 //读取
 //this.getDataFolder()方法返回插件配置文件夹的File对象
 File biuConfigFile = new File(this.getDataFolder(), "biu.yml");
 FileConfiguration biuConfig = YamlConfiguration.loadConfiguration(biuConfigFile);
-biuConfigFile.get.......
-biuConfigFile.set....... //set完了记得保存!
+biuConfigFile.get******(...);
+biuConfigFile.set******(...); //set完了记得保存!
 //保存
 biuConfig.save(biuConfigFile);
 ```
@@ -115,19 +116,21 @@ biuConfig.save(biuConfigFile);
 # 序列化
 ## 了解序列化
 如果我自己做了一个类型, 例如下面的`BakaRua`类:
-```
+```java
 public class BakaRua{
-    public String name;
+	public String name;
 	public String str;
 
-    public BakaRua(String name, String str){
-	    this.name = name;
+	public BakaRua(String name, String str){
+		this.name = name;
 		this.str = str;
 	}
 }
 ```
 现在我们新建一个BakaRua对象:  
-`BakaRua test = new BakaRua("tdiant", "hello!!");`  
+```java
+BakaRua test = new BakaRua("tdiant", "hello!!");
+```
 我们想把test保存在配置文件里怎么办?  
 很遗憾,`getConfig().set("demo",test);`是行不通的.
 
@@ -138,7 +141,7 @@ public class BakaRua{
 > 如果你想判断一个类型是不是可以直接set, 你可以在JavaDoc中找到它, 看它是否实现了ConfigurationSerializable类.
 
 你可能想到了最简单粗暴的办法:
-```
+```java
 //这样set
 getConfig().set("demo.name",test.name);
 getConfig().set("demo.str",test.str);
@@ -151,49 +154,49 @@ getConfig().getString("demo.str");
 
 ## 让自定义类型实现序列化与反序列化
 以上文`BiuRua`为例. 首先让他实现`ConfigurationSerializable`, 并添加`deserialize`方法. 如下:
-```
+```java
 public class BakaRua implements ConfigurationSerializable {
-    public String name;
+	public String name;
 	public String str;
 
-    public BakaRua(String name, String str){
-	    this.name = name;
+	public BakaRua(String name, String str){
+		this.name = name;
 		this.str = str;
 	}
 	
 	@Override
 	public Map<String,Object> serialize() {
-	    Map<String,Object> map = new HashMap<String,Object>();
+		Map<String,Object> map = new HashMap<String,Object>();
 		return map;
 	}
 	
 	public static BakaRua deserialize(Map<String,Object> map){
-	    
+		
 	}
 }
 ```
 然后继续完善`serialize`, 实现序列化. 我们只需要把需要保存的数据写入map当中即可.  
 注意, 需要保存的数据要保证可以直接set, 不能则也需要为他实现序列化与反序列化.  
-```
-	@Override
-	public Map<String,Object> serialize() {
-	    Map<String,Object> map = new HashMap<String,Object>();
-		map.put("name",name);
-		map.put("str",str);
-	    return map;
-	}
+```java
+@Override
+public Map<String,Object> serialize() {
+	Map<String,Object> map = new HashMap<String,Object>();
+	map.put("name",name);
+	map.put("str",str);
+	return map;
+}
 ```
 序列化后, 数据即可直接set进配置文件里. 为了实现直接get的目的, 还需要进行反序列化.  
-```
-	public static BakaRua deserialize(Map<String,Object> map){
-	    return new BakaRua(
-		    (map.get("name")!=null?(String)map.get("name"):null),
-			(map.get("str")!=null?(String)map.get("str"):null)
-		);
-	}
+```java
+public static BakaRua deserialize(Map<String,Object> map){
+	return new BakaRua(
+		(map.get("name")!=null?(String)map.get("name"):null),
+		(map.get("str")!=null?(String)map.get("str"):null)
+	);
+}
 ```
 编写完毕后, 我们需要像注册监听器一样, 注册序列化. 在`onEnable`中加入如下语句:
-```
+```java
 ConfigurationSerialization.registerClass(BiuRua.class);
 ```
 至此, 你就可以自由地对一个自定义的对象直接地get和set了!
