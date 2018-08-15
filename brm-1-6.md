@@ -210,15 +210,17 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import tdiant.bukkit.stupidlogin.LoginManager;
 
 public class PlayerTipListener implements Listener {
+	
 	//玩家进入服务器后的“请您登录”提示语
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		e.getPlayer().sendMessage(
-			LoginManager.isRegister(e.getPlayer().getName()) ?
-			"欢迎回来！请输入/login 密码 登录服务器！" :
-			"欢迎第一次来到本服务器！请输入/register 密码 注册账号！"
-		);
+					LoginManager.isRegister(e.getPlayer().getName())?
+							"欢迎回来！请输入/login 密码 登录服务器！":
+							"欢迎第一次来到本服务器！请输入/register 密码 注册账号！"
+				);
 	}
+
 }
 ```
 
@@ -309,7 +311,7 @@ public class PlayerLoginCommand implements Listener, CommandExecutor {
 ### 在主类和plugin.yml注册
 我们需要把监听器和命令在主类和`plugin.yml`中进行注册.
 
-```yaml
+```yml
 name: StupidLogin
 main: tdiant.bukkit.stupidlogin.StupidLogin
 version: 1
@@ -328,16 +330,16 @@ commands:
 
 然后就是在主类注册一下了! `onEnable`方法内添加:  
 ```java
-//Configuration
-this.saveDefaultConfig();  //输出默认配置
-//Listener
-Bukkit.getPluginManager().registerEvents(new PlayerLimitListener(), this);  //注册监听器
-Bukkit.getPluginManager().registerEvents(new PlayerLoginCommand(), this);
-Bukkit.getPluginManager().registerEvents(new PlayerTipListener(), this);
-//Commands
-CommandExecutor ce = new PlayerLoginCommand();  //注册指令，这里两个指令公用同一个Executor
-Bukkit.getPluginCommand("login").setExecutor(ce);
-Bukkit.getPluginCommand("register").setExecutor(ce);
+		//Configuration
+		this.saveDefaultConfig();  //输出默认配置
+		//Listener
+		Bukkit.getPluginManager().registerEvents(new PlayerLimitListener(), this);  //注册监听器
+		Bukkit.getPluginManager().registerEvents(new PlayerLoginCommand(), this);
+		Bukkit.getPluginManager().registerEvents(new PlayerTipListener(), this);
+		//Commands
+		CommandExecutor ce = new PlayerLoginCommand();  //注册指令，这里两个指令公用同一个Executor
+		Bukkit.getPluginCommand("login").setExecutor(ce);
+		Bukkit.getPluginCommand("register").setExecutor(ce);
 ```
 
 ### 后记

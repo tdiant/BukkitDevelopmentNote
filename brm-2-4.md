@@ -1,136 +1,20 @@
-<p style="font-size:24px;">深入配置API</p>
-# 基本用法(操作config.yml)
-## 默认配置文件
-每个插件都可以有一个`config.yml`文件作为其配置文件.  
-我们首先需要准备一份默认配置文件, 也就是插件放进`plugins`文件夹后第一次被加载自动生成的配置文件.  
-
-首先我们需要创建`config.yml`文件. 默认的`config.yml`文件要与`plugin.yml`文件处于同一目录下. 在这里我们在默认`config.yml`文件中存入这些信息:  
-```yaml
-a: 1
-b: "abc"
-c: abc
-d:
-  e: true
-  f: 666.233
-  g:
-  - '2333'
-  - '998'
-```
-完成后, 我们需在`onEnable`方法中插入这样的语句:
-```java
-saveDefaultConfig(); //我建议这个东西写在主类onEnable方法开头那里或者onLoad方法里
-```
-该语句需要保证在读写配置文件之前被执行.  
-它可以自动判断插件配置文件夹中是否存在`config.yml`文件, 在没有的时候将该插件jar文件的根目录中`config.yml`保存至插件配置文件夹.
-
-## 写入配置文件
-让我们尝试写入配置文件, 在`onEnable`方法被调用时把配置文件中键`h`改为字符串`baka`.  
-我们可以这样做:
-```java
-public void onEnable(){
-	this.saveDefaultConfig();
-	this.getConfig().set("h","baka");
-	this.saveConfig();
-}
-```
-执行后可发现, 插件配置文件夹中`config.yml`文件的`h`键内容已经成为`baka`.  
-`set`以后要记得`saveConfig`!
-
-## 读取配置文件中数据
-我们可以使用`get`来读取数据.
-```java
-public void onEnable(){
-	this.saveDefaultConfig();
-	System.out.println(getConfig().get("a"));  //这里的get方法返回Object类型数据
-}
-```
-后台将`a`键的值, 也就是将会输出`1`.
-
-对于不同的数据, 配置API给出了不同的get方法. 例如 `getString`、`getBoolean`、`getDouble`、`getInt`等.  
-
-还记得前面的那个"类型问题"吗? `a`键的值究竟是什么数据类型呢?   
-答案已经揭晓, 取决于你使用的是哪个get方法. 如果使用`getString`获取`a`键的值, 那么获取到的将是`String`类型, 如果是`getInt`, 那么就是`int`类型, 如果是`getDouble`, 那么就是`double`类型......
-
-对于`d.g`键, 其内容这样获取:
-```java
-List<String> list = getConfig().getStringList("d.g");
-```
-
-## 在其他类中操作配置文件
-我们已经知道如何注册监听器. 那么我们免不了遇到在其他类中操作配置文件的情况.  
-然而你会发现, `getConfig`方法并不是static(静态)的. 我们不能直接在其他类操作配置文件.    
-
-如果你有一些Java开发常识, 此时你可能意识到了, 我们需要做一个静态的主类实例才行.  
-在这里赘述一种我自己喜欢用的方式. 这是一个经过处理的主类, 有两处需要注意:  
-```java
-public class HelloWorld extends JavaPlugin{
-	private static HelloWorld INSTANCE;
-
-	public void onEnable(){
-		INSTANCE = this; //这个推荐放在最最最开头
-		......
-	}
-
-    ......
-
-	public static HelloWorld getInstance(){
-		return INSTANCE;
-	}
-}
-```
-
-然后你就可以在其他类中这样操作配置文件:
-```java
-HelloWorld.getInstance().getConfig().你要做的各种操作
-HelloWorld.getInstance().saveConfig(); //写入配置文件内容了以后记得保存!
-```
-# 操作自定义的配置文件
-关于非`config.yml`的YAML文件的操作, 有很多种方式可以做到.  
-下文叙述的是其中的一种.
-
-## 默认配置文件
-我们还是需要像`config.yml`那样准备一份默认配置文件, 放在与plugin.yml相同目录下. 不同的是, 除了`saveDefaultConfig`以外, 我们还需要其他的代码来保存默认配置文件.  
-
-例如我们有`config.yml`和`biu.yml`两个配置文件, 插件加载时应该这样生成默认配置文件:  
-```java
-this.saveDefaultConfig(); //生成默认config.yml
-this.saveResource("biu.yml", false); //生成默认biu.yml
-```
-*`saveResource`方法的第一个参数是文件名, 第二个参数是是否覆盖, 设置成false可以达到saveDefaultConfig的效果.*  
-
-同理,利用`saveResource`可以生成你想生成的默认的非`config.yml`的配置文件.
-
-## 基本读写与保存
-下面是一个读写与保存的示例:
-```java
-//读取
-//this.getDataFolder()方法返回插件配置文件夹的File对象
-File biuConfigFile = new File(this.getDataFolder(), "biu.yml");
-FileConfiguration biuConfig = YamlConfiguration.loadConfiguration(biuConfigFile);
-biuConfigFile.get******(...);
-biuConfigFile.set******(...); //set完了记得保存!
-//保存
-biuConfig.save(biuConfigFile);
-```
-
+<p style="font-size:24px;">配置API的序列化和遍历</p>
 # 序列化
 ## 了解序列化
 如果我自己做了一个类型, 例如下面的`BakaRua`类:
 ```java
 public class BakaRua{
-	public String name;
+    public String name;
 	public String str;
 
-	public BakaRua(String name, String str){
-		this.name = name;
+    public BakaRua(String name, String str){
+	    this.name = name;
 		this.str = str;
 	}
 }
 ```
 现在我们新建一个BakaRua对象:  
-```java
-BakaRua test = new BakaRua("tdiant", "hello!!");
-```
+`BakaRua test = new BakaRua("tdiant", "hello!!");`  
 我们想把test保存在配置文件里怎么办?  
 很遗憾,`getConfig().set("demo",test);`是行不通的.
 
@@ -156,47 +40,125 @@ getConfig().getString("demo.str");
 以上文`BiuRua`为例. 首先让他实现`ConfigurationSerializable`, 并添加`deserialize`方法. 如下:
 ```java
 public class BakaRua implements ConfigurationSerializable {
-	public String name;
+    public String name;
 	public String str;
 
-	public BakaRua(String name, String str){
-		this.name = name;
+    public BakaRua(String name, String str){
+	    this.name = name;
 		this.str = str;
 	}
 	
 	@Override
 	public Map<String,Object> serialize() {
-		Map<String,Object> map = new HashMap<String,Object>();
+	    Map<String,Object> map = new HashMap<String,Object>();
 		return map;
 	}
 	
 	public static BakaRua deserialize(Map<String,Object> map){
-		
+	    
 	}
 }
 ```
 然后继续完善`serialize`, 实现序列化. 我们只需要把需要保存的数据写入map当中即可.  
 注意, 需要保存的数据要保证可以直接set, 不能则也需要为他实现序列化与反序列化.  
 ```java
-@Override
-public Map<String,Object> serialize() {
-	Map<String,Object> map = new HashMap<String,Object>();
-	map.put("name",name);
-	map.put("str",str);
-	return map;
-}
-```
-序列化后, 数据即可直接set进配置文件里. 为了实现直接get的目的, 还需要进行反序列化.  
+	@Override
+	public Map<String,Object> serialize() {
+	    Map<String,Object> map = new HashMap<String,Object>();
+		map.put("name",name);
+		map.put("str",str);
+	    return map;
+	}
 ```java
-public static BakaRua deserialize(Map<String,Object> map){
-	return new BakaRua(
-		(map.get("name")!=null?(String)map.get("name"):null),
-		(map.get("str")!=null?(String)map.get("str"):null)
-	);
-}
+序列化后, 数据即可直接set进配置文件里. 为了实现直接get的目的, 还需要进行反序列化.  
+```
+	public static BakaRua deserialize(Map<String,Object> map){
+	    return new BakaRua(
+		    (map.get("name")!=null?(String)map.get("name"):null),
+			(map.get("str")!=null?(String)map.get("str"):null)
+		);
+	}
 ```
 编写完毕后, 我们需要像注册监听器一样, 注册序列化. 在`onEnable`中加入如下语句:
 ```java
 ConfigurationSerialization.registerClass(BiuRua.class);
 ```
 至此, 你就可以自由地对一个自定义的对象直接地get和set了!
+
+# 配置文件的遍历
+试想, 如果存在下面的配置文件:  
+```yml
+demo_list:
+   a: 1
+   b: 233
+   c: 666
+   d: lalalalalal
+```
+我应该如何对`demo_list`的子键进行遍历, 得到所有子键的对应值?  
+最简单错报的方式就是将`demo_list.a`键、`demo_list.b`键...依次读取. 但这是建立在你知道`demo_list`有`a`、`b`、`c`...这些子键的基础之上的.  
+如果我事先不知道`demo_list`的子键都各自叫什么, 又应应该如何对`demo_list`的子键进行遍历, 得到所有子键的对应值?  
+
+## 配置片段 ConfigurationSection
+我们可以把`demo_list`键对应的部分拆出来.  
+*下文假设config对象是我们现在正在操作的FileConfiguration对象.*
+```java
+ConfigurationSection cs = config.getConfigurationSection​("demo_list");
+```
+这里我们得到了cs对象, 这个对象可以当做config对象`demo_list`键部分的片段, 等效于这个yaml数据:  
+```yml
+a: 1
+b: 233
+c: 666
+d: lalalalalal
+```
+
+对于一个`ConfigurationSection`对象, 其代表着一个完整配置数据的某个片段, 你不能利用诸如`saveConfig`的方式保存这个片段到另外一个yml文件里.
+
+## 利用getKeys实现遍历
+在上面我们得到了cs对象, 这代表着config对象`demo_list`键部分的片段.  
+现在问题转化成了, 如何获取到cs对象里的所有键.  
+可以利用`getKeys(false)`的方式达到目的.
+
+```java
+for(String key:cs.getKeys(false))
+	System.out.println(key + " = " + cs.get(key));
+```
+上面的代码将输出:
+```
+a = 1
+b = 233
+c = 666
+d = lalalalalal
+```
+这样就实现了遍历.
+
+`getKeys`方法不只是`ConfigurationSection`拥有, 根据其继承关系, 我们可以推知对`FileConfiguration`类也拥有`getKeys`方法, 同理, `ConfigurationSection`类也有`getConfigurationSection​`方法.  
+
+但是我们刚才为什么要给`getKeys`的一个`false`的参数呢? 请看下面的yaml数据:  
+```yml
+test:
+  a:
+    b: 1
+  c: 2
+d: 1
+```
+我们得到了这个配置文件的`FileConfiguration`对象`config`, 现在对其用`getKeys(false)`进行遍历, 得到所有键.  
+```java
+for(String key:config.getKeys(false))
+	System.out.println(key);
+System.out.println("===================");
+for(String key:config.getKeys(true))
+	System.out.println(key);
+```
+输出结果如下:
+```
+test
+d
+===================
+test
+test.a
+test.a.b
+test.c
+d
+```
+由此可知, `getKeys(false)`只能获取“一层的键”, 不能递归获取配置文件里所有的键. 而`getKeys(true)`会递归获取配置文件里所有出现的键.

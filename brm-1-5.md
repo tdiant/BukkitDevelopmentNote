@@ -10,14 +10,14 @@ MC中的命令是一个字符串, 用来实现游戏内高级功能.
 除去命令的名称, 剩下的部分从空格处断开可以分成一个数组.  
 
 例如, `a b c`是一个命令, 其命令名称为`a`, 其参数可用一个数组`args`表示为:  
-```java
+```
 args[0]: "b"
 args[1]: "c"
 ```
 
 # 定义新命令
 如果我们需要定义一个新的命令, 首先我们需要在`plugin.yml`文件中增加相关信息:
-```yaml
+```yml
 name: HelloWorld
 main: tdiant.helloworld.HelloWorld
 version: 1
@@ -35,16 +35,16 @@ commands:
 
 | 键 | 用途 | 例子 |
 | -----   | -----   | ---- |
-| description | 描述作用. 将会在/help中显示 |  `description: "I am a cute command."` |
-| aliases | 设置别名. 比如登录插件login命令也可以用/l命令代替 | `aliases: [l, log]` |
-| permission | 设置命令需要的权限 | `permission: rua.use` |
-| permission-message | 没权限时的提示语 | `permission-message: "YOU HAVE NO PERMISSION!"` |
-| usage | 命令的用法 | `usage: /<command> YOUR_NAME` |
+| description | 描述作用. 将会在/help中显示 |  description: "I am a cute command." |
+| aliases | 设置别名. 比如登录插件login命令也可以用/l命令代替. | aliases: [l, log] |
+| permission | 设置命令需要的权限 | permission: rua.use |
+| permission-message | 没权限时的提示语 | permission-message: "YOU HAVE NO PERMISSION!" |
+| usage | 命令的用法. | usage: /<command> YOUR_NAME |
 
 注意:  
-1. `<command>`在`usage`里可以代表你的命令名.  
-2. 你的命令设置了`aliases`后命令名不能按照`aliases`称呼. 比如你给`login`命令设置了`aliases: [l]`你不能也叫他`l`命令, 它还是`login`命令.  
-3. 不推荐使用`permission`和`permission-message`, 因为`plugin.yml`里出现中文爱出问题. 事实上, 我们可以用`Player.hasPermission`方法在监听命令的时候自己亲自判断有没有权限.
+1. <command>在usage里可以代表你的命令名.  
+2. 你的命令设置了aliases后命令名不能按照aliases称呼. 比如你给login命令设置了`aliases: [l]`你不能也叫他`l`命令, 它还是`login`命令.  
+3. 不推荐使用`permission`和`permission-message`, 因为plugin.yml里出现中文爱出问题. 事实上, 我们可以用`Player.hasPermission`方法在监听命令的时候自己亲自判断有没有权限.
 4. 如果一个名称被别的插件注册了或设置为了某个命令的别称, 会出现冲突问题, 尽量避免.
 5. 别弄中文的命令, 如果想搞, 去试试监听`PlayerCommandPreprocessEvent`.
 
@@ -68,9 +68,9 @@ Bukkit.getPluginCommand("rua").setExecutor(new DemoCommand());
 但是如果onCommand方法放在了主类里, 那就不需要注册了.  
 
 `onCommand`方法有四个参数, 分别为:  
-1. `CommandSender sender` —— 命令输入方, 实际传入的有可能是Console, 有可能是Player或者其他情况.    
-2. `Command cmd` —— 所执行的命令对象.  
-3. `String[] args` —— 参数. 例如`/rua a b`的话, `args[0]`为`a`, `args[1]`为`b`.  
+1. CommandSender sender —— 命令输入方, 实际传入的有可能是Console, 有可能是Player或者其他情况.    
+2. Command cmd —— 所执行的命令对象.  
+3. String[] args —— 参数. 例如/rua a b的话, args[0]为"a", args[1]为"b".  
 
 如果你的命令希望只被玩家使用, 通常这样判断:
 ```java
@@ -88,11 +88,11 @@ if(p.hasPermission("rua.use")){
 }
 ```
 玩家将会在聊天区域内看到输出:  
-```java
+```
 你有权限！
 ```
 
-Bukkit内可以用`ChatColor`表示颜色前缀, 例如:  
+Bukkit内可以用ChatColor表示颜色前缀, 例如:  
 ```java
 p.sendMessage(ChatColor.RED+"你输错了！"); //输出红色的 "你输错了"
 p.sendMessage(ChatColor.RED+"还可以"+ChatColor.YELLOW+"两种颜色混着用！");
@@ -105,7 +105,7 @@ p.sendMessage(str); //这样会显示出 "&4哈哈", 不带颜色
 p.sendMessage(ChatColor.translateAlternateColorCodes('&',str)); //这样就带颜色了
 ```
 
-还有其他的好玩的东西, 把下面的代码放在`onEnable`方法里试试看:  
+还有其他的好玩的东西, 把下面的代码放在onEnable方法里试试看:  
 ```java
 System.out.println(ChatColor.RED+"猜猜我是什么效果"); 
 this.getLogger().info(ChatColor.RED+"你再猜猜我是什么效果");
