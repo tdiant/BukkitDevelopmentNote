@@ -112,8 +112,8 @@ inv.clear(); //清空整个inventory
 如何制作一个这样的箱子GUI呢?  
 ![](http://www.miao.su/images/2018/08/15/DoubleChest-slotscb78b.png)  
 ```java
-Inventory inv = Bukkit.createInventory(null, 6*9, "东方大陆真好玩"); 
-//第一项是主人在这里可以设null(还记得Inventory和箱子或玩家背包等一一对应吗)
+Inventory inv = Bukkit.createInventory(player, 6*9, "东方大陆真好玩"); 
+//第一项是主人在这里, 可以设打开界面的玩家Player对象(还记得Inventory和箱子或玩家背包等一一对应吗)
 //第二项必须是 9n (n∈N+且1≤n≤6)
 //第三项是标题
 ItemStack item_bk = new ItemStack(Material.DIAMOND);
@@ -187,3 +187,6 @@ public void onInventoryClick(InventoryClickEvent e){
 }
 ```
 基于这个思路, 你可以做出一个有功能的箱子GUI了!
+
+> 思考: 如果遇到了某些能够修改箱子GUI的标题的插件(比如帮助加前缀)  
+> 能不能利用 holder 来区分GUI呢?
