@@ -17,7 +17,8 @@
         "-sharing",
         "search-plus",
         "anchors",
-        "anchor-navigation-ex"
+        "anchor-navigation-ex",
+        "advanced-emoji"
     ],
     "pluginsConfig": {
         "simple-page-toc": {
