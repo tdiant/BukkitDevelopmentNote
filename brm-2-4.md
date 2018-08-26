@@ -15,7 +15,10 @@ public class BakaRua {
 }
 ```
 现在我们新建一个BakaRua对象:
-`BakaRua test = new BakaRua("tdiant", "hello!!");`  
+```java
+BakaRua test = new BakaRua("tdiant", "hello!!");
+```
+
 我们想把test保存在配置文件里怎么办?  
 很遗憾,`getConfig().set("demo",test);`是行不通的.
 
@@ -38,7 +41,7 @@ getConfig().getString("demo.str");
 这的确是一种切实可行的办法. 但是这真的是太麻烦了. 有没有一种方法直接set test这个对象, 直接get就得到这个对象的办法呢? 有! 你可以使用序列化和反序列化实现它!
 
 ## 让自定义类型实现序列化与反序列化
-以上文`BakaRua`为例. 首先让他实现`ConfigurationSerializable`, 并添加`deserialize`方法. 如下:
+以上文`BakaRua`为例. 首先让他实现`ConfigurationSerializable`, 并添加`deserialize`方法. 如下:  
 ```java
 public class BakaRua implements ConfigurationSerializable {
     public String name;
@@ -60,6 +63,7 @@ public class BakaRua implements ConfigurationSerializable {
     }
 }
 ```
+
 然后继续完善`serialize`, 实现序列化. 我们只需要把需要保存的数据写入map当中即可.  
 注意, 需要保存的数据要保证可以直接set, 不能则也需要为他实现序列化与反序列化.  
 ```java
@@ -70,7 +74,8 @@ public Map<String,Object> serialize() {
     map.put("str",str);
     return map;
 }
-```java
+```
+
 序列化后, 数据即可直接set进配置文件里. 为了实现直接get的目的, 还需要进行反序列化.  
 ```java
 public static BakaRua deserialize(Map<String, Object> map) {
