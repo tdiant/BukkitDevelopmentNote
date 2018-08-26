@@ -1,4 +1,4 @@
-﻿<p style="font-size:24px;">Bukkit 的多线程多任务框架</p>
+<p style="font-size:24px;">Bukkit 的多线程多任务框架</p>
 
 # 前言
 本节前半部分内容基本是对Javadoc的复述, 以及使用它们的注意事项. 如果此前您已经使用过了此包, 或者您有良好的文档阅读及应用能力, 建议您先阅读“注意事项”和“小技巧”一栏, 这才是本节教程更重要的知识!
@@ -9,6 +9,15 @@ Bukkit 的多线程多任务框架放在了此包, 此包只含有三个接口(`
 
 # 访问 org.bukkit.scheduler 的两个入口
 一是使用`org.bukkit.Bukkit.getScheduler()`或`org.bukkit.Bukkit.getServer().getScheduler()`获取`BukkitScheduler`实例.
+例子:
+```java
+Bukkit.getScheduler().runTask(this, new Runnable() {
+    @Override
+    public void run() {
+        // 逻辑代码
+    }
+});
+```
 另一个是构造一个继承`org.bukkit.scheduler.BukkitRunnable`的匿名内部类, 就像这样:
 ```java
 new BukkitRunnable() {
@@ -22,25 +31,22 @@ new BukkitRunnable() {
 
 # 如何使用
 在这里只介绍Bukkit 任务调度API的核心 ———— BukkitScheduler 的使用方法, 并且不对那些已过时的方法做解释说明(通常情况下你不应该使用它们).  
-值得注意的是, Bukkit 的调度任务系统是以 Minecraft 的游戏刻为时间单位的, 其中一个游戏刻(又叫做tick, 下文都使用`tick`指代游戏刻)对应现实世界的50ms(也就是说, 20 ticks是一秒). 不过实际上受服务器性能因素的影响, 不一定每一tick都完整地经过了50ms. 所以在您编写Bukkit 插件时, 请把你置身于 Minecraft 的世界里:)  
-如果没有特别说明, 下文中所有介绍到的要求提供时间的方法, 均以tick为单位. 方法全名规则是前者为方法返回值, 后者为方法名和相关参数.
+值得注意的是, Bukkit 的调度任务系统是以 Minecraft 的游戏刻为时间单位的, 其中一个游戏刻(又叫做tick, 下文都使用`tick`指代游戏刻)对应现实世界的50ms(也就是说, 理想情况下20 ticks是一秒). 但实际上受服务器性能因素的影响, 不一定每一tick都精确地经过了50ms (服务器每秒经过的ticks数可以使用命令`tps`查询). 所以在您编写Bukkit 插件时, 请把你置身于 Minecraft 的世界里:)  
+如果没有特别说明, Bukkit所提供的调度任务的方法, 时间均以tick为单位. 方法全名规则是前者为方法返回值, 后者为方法名和相关参数.
 
 ## 调度同步任务
-### BukkitTask runTask(Plugin plugin, java.lang.Runnable task) 以及 BukkitTask runTaskLater(Plugin plugin, java.lang.Runnable task, long delay)
-这是调度**同步任务**的主要的两个方法, 后一个提供了一个`delay`延迟选项, 用于指定调度任务多久后才开始执行. 默认情况下, delay值为1.
+### BukkitTask runTask(Plugin plugin, java.lang.Runnable task)
+这是调度**同步任务**的主要方法, 另一个方法`runTaskLater`提供了一个`delay`延迟参数, 用于指定调度任务多久后才开始执行. 不指定`delay`的情况下, delay值为1.
 ### BukkitTask runTaskTimer(Plugin plugin, java.lang.Runnable task, long delay, long period)
 这是调度重复任务的方法, 所得的任务是**同步**的, `period`最低值为1，您不能将其设为比1低的值 (若设为0则等效于1, 小于0表示该任务不是重复的).  
 由于是同步任务, 您在Runnable的run()方法中的代码, 是运行于服务器主线程的, 所以请仔细评估这些代码的效率, 因为这可能会影响服务器的性能(尤其是TPS指标), 从而降低服务器流畅度. 如果不与 Minecraft 有关, 请放在下面要介绍的异步任务.
 
 ## 调度异步任务
-### BukkitTask runTaskAsynchronously(Plugin plugin, java.lang.Runnable task) 以及 BukkitTask runTaskLaterAsynchronously(Plugin plugin, java.lang.Runnable task, long delay)
-这是调度**异步任务**的主要的两个方法, 同样提供一个`delay`延迟选项, 就不再解释其意了.
+### BukkitTask runTaskAsynchronously(Plugin plugin, java.lang.Runnable task)
+这是调度**异步任务**的主要方法, 另一个方法`runTaskLaterAsynchronously`提供一个`delay`延迟参数.
 ### BukkitTask runTaskTimerAsynchronously(Plugin plugin, java.lang.Runnable task, long delay, long period)
 这是调度重复任务的方法, 所得的任务是**同步**的. 通常我们使用异步任务来处理非Minecraft的逻辑,比如数据库的CRUD(增删改查)操作.  
 在异步任务中, 需要特别注意线程安全问题, 比如您不能随意调用 Bukkit API. 这个问题会稍后予以详细的解释说明.
-
-### int scheduleSyncDelayedTask(Plugin plugin, java.lang.Runnable task) ; int scheduleSyncDelayedTask(Plugin plugin, java.lang.Runnable task, long delay) ; int scheduleSyncRepeatingTask(Plugin plugin, java.lang.Runnable task, long delay, long period)
-这三者其实与`BukkitRunnable.runTaskxxx`是一样的，不过返回值变成了任务id, 如果您想在稍后取消任务, 会更麻烦, 因此不推荐使用. 不过方法名表明的含义更清晰 ———— 清楚地告诉代码读者这调度的是同步任务.
 
 # 注意事项
 ## 线程安全
@@ -50,7 +56,7 @@ Bukkit API文档清楚地告诉我们异步任务中不应访问某些Bukkit API
 > “引自百度百科”
 
 大多数集合不是线程安全的, 比如经常使用的`HashMap`、`ArrayList`. 同样适用于非线程安全的对象.  
-限于篇幅, 这里不作深入探讨. 想要了解更多, 书籍与搜索引擎是您的好伙伴.  
+限于篇幅, 这里不作深入探讨. 想要了解更多, 请询问您的书籍与搜索引擎.  
 Bukkit 中的线程安全?  
 Minecraft 中几乎所有的游戏逻辑都运行于主线程中, 而插件的大多数逻辑也是运行于主线程中的, 这包括插件命令的执行、(同步)事件的处理等等.  
 如果我们调度了一个异步任务, 或者处于异步事件中, 那么就不应当访问与Minecraft游戏内容有关的API(比如操作方块、加载区块、踢出玩家等). 尝试这么做极有可能得到异常, 使得插件崩溃.
@@ -141,9 +147,3 @@ try {
 这段代码是在异步任务中运行的.
 
 食用方法可以说是较复杂了, 如果你没有获取数据的需要, 仅仅需要在主线程内运行特定代码, 使用`BukkitScheduler#runTask()`更好. 没有必要为了 bigger 而 bigger, 唯有**simple**得人心.
-
-## 类库推荐
-很多开发者喜欢造些轮子, 来简化一些他们觉得繁复的东西.  
-如果你的项目有了一定规模, 可能觉得在异步任务里总要写句`runTask`非常繁琐, 而且项目需要使用异步任务的的场景非常多, 这肯定不是办法.  
-国外开发者aikar做了一个库, 叫做`TaskChain`, 可以用来解决上述的问题. 该类库使用的方法极其优雅, 而且将 lambda 表达式运用得淋淋尽致.
-推荐尝试! ———— [Github传送门](https://github.com/aikar/TaskChain) (如果你的项目中线程间的关系并不复杂, 不必使用此类库, 尽量保持项目苗条而不失风度 :smile:)
