@@ -29,7 +29,7 @@ commands:
 
 在`plugin.yml`文件里, 我们增加了`commands.rua`键, 这就可以代表注册了一个`rua`命令. 我们给他增加了一个`description`子键表示对该命令的描述, 描述信息会出现在`/help`菜单里.  
 
-请注意, 请尽可能不要在plugin.yml文件里出现中文! 这会出现问题!
+请注意, 请尽可能不要在plugin.yml文件里出现中文! 这可能会出现问题!
 
 `commands.命令名`键可以有很多个子键, 这些都不是必须添加的, 甚至它可以没有子键. 具体子键如下:  
 
@@ -54,7 +54,7 @@ commands:
 ```java
 public class DemoCommand implements CommandExecutor {
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] arg) {
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		sender.sendMessage("HI!");
 		return true; //true代表命令执行没问题, 返回false的话Bukkit会给命令输入方一个错误提示语
 	}
@@ -71,6 +71,7 @@ Bukkit.getPluginCommand("rua").setExecutor(new DemoCommand());
 1. CommandSender sender —— 命令输入方, 实际传入的有可能是Console, 有可能是Player或者其他情况.    
 2. Command cmd —— 所执行的命令对象.  
 3. String[] args —— 参数. 例如/rua a b的话, args[0]为"a", args[1]为"b".  
+> 警告: 字符串的比较, 请不要使用`==`, 因为其比对的是内存地址, 可能造成一些没有预料到的结果! 建议使用`equals`方法, 例如`args[0].equals(string)`
 
 如果你的命令希望只被玩家使用, 通常这样判断:
 ```java
