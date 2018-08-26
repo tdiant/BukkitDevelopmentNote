@@ -35,6 +35,7 @@ org.bukkit.plugin.InvalidDescriptionException: Invalid plugin.yml
 ## version
 指插件的版本号.  
 该键理论上可以在后面填写任意String内容. 但是官方WIKI要求尽可能使用X.X.X格式的版本号表示(例如: 2.3.3).  
+关于版本号规则，可以参考[语义化版本](https://semver.org/lang/zh-CN/)
 
 ## main
 指插件的主类名.  
