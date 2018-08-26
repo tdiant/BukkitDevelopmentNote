@@ -151,7 +151,8 @@ B插件:
 `@EventHandler`注解有一个成员叫做`priority`, 给他设置对应的`EventPriority`, 即可设置监听优先级. 在上面的例子中, Bukkit会在所有的LOWEST级监听被调用完毕后, 再去调用HIGHEST级监听.  
 
 `EventPriority`提供了五种优先级, 按照被调用顺序,为:  
-LOWEST < LOW < NORMAL(如果你不设置, 默认就是它) < HIGH < HIGHEST < MONITOR .
+LOWEST < LOW < NORMAL(如果你不设置, 默认就是它) < HIGH < HIGHEST < MONITOR .  
+其中, LOWEST最先被调用, 但对事件的影响最小. MONITOR最后被调用, 对事件的影响最大.
 
 ## ignoreCancelled
 `@EventHandler`注解除了`priority`之外, 还有`ignoreCancelled`. 如果不设置, 它默认为false.  
