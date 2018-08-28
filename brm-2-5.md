@@ -45,7 +45,7 @@ new BukkitRunnable() {
 ### BukkitTask runTaskAsynchronously(Plugin plugin, java.lang.Runnable task)
 这是调度**异步任务**的主要方法, 另一个方法`runTaskLaterAsynchronously`提供一个`delay`延迟参数.
 ### BukkitTask runTaskTimerAsynchronously(Plugin plugin, java.lang.Runnable task, long delay, long period)
-这是调度重复任务的方法, 所得的任务是**同步**的. 通常我们使用异步任务来处理非Minecraft的逻辑,比如数据库的CRUD(增删改查)操作.  
+这是调度重复任务的方法, 所得的任务是**异步**的. 通常我们使用异步任务来处理非Minecraft的逻辑,比如数据库的CRUD(增删改查)操作.  
 在异步任务中, 需要特别注意线程安全问题, 比如您不能随意调用 Bukkit API. 这个问题会稍后予以详细的解释说明.
 
 # 注意事项
