@@ -14,12 +14,6 @@ Q群: 861294270
 E-Mail: tdiant@126.com  
 QQ: 2062748998 (可能因为上学不在, 如果在的话会回复)  
 
-# 打赏
-文章内容需要资金维持. 文章还有许多内容尚需完善.  
-如果你能打赏给我一些钱的话，感激不尽.  
-
-<center><a href="https://blog.tdiant.net/about/ds.html"><p style="font-size:24px">点此展开</p></a><p>或者您可以扫描下方二维码，在<b>爱发电</b>上打赏. 感激不尽.</p><img src="https://miao.su/images/2018/07/24/afdian_qr95326.png"  alt="afdian.net" /></center>
-
 # 目前计划中...
 1. [尚未完成]完成 BukkitAPI入门.(目前看来是巨坑)  
 
@@ -56,6 +50,7 @@ QQ: 2062748998 (可能因为上学不在, 如果在的话会回复)
 
 ## 感谢您的打赏
 由衷感谢他们的打赏, 这是对我最好的鼓励!  
+如果你希望打赏, 请访问: bdn.tdiant.net  
 
 [打赏感谢名单](https://blog.tdiant.net/about/ds.html)
 
