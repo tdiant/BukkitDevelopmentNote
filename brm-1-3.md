@@ -50,8 +50,8 @@ Material m = item1.getType(); //得到item1的类型, 也就是Material.DIAMOND
 ```
 
 Lore是物品的描述信息, 请看下图:  
-![](http://miao.su/images/2018/08/15/QQ201808151647582b05e.png)
-这是来自服务器 **东方大陆** 其中的一个物品, 该物品的Lore为:  
+![](http://miao.su/images/2018/08/15/QQ201808151647582b05e.png)  
+该物品的Lore为:  
 ```
 §8材质: §b铜锌合金
 §8电荷量: §b10.0J
@@ -106,13 +106,13 @@ inv.clear(); //清空整个inventory
 ```
 
 ## 箱子GUI
-![](http://www.miao.su/images/2018/08/15/QQ20180815172208834e3.png)
-上面的图片是**东方大陆**服务器的一张图. 这里面展示的是其服务器某一功能的 箱子GUI 效果.  
+![](http://www.miao.su/images/2018/08/15/QQ20180815172208834e3.png)  
+这里面展示的是其服务器某一功能的 箱子GUI 效果.  
 
 如何制作一个这样的箱子GUI呢?  
 ![](http://www.miao.su/images/2018/08/15/DoubleChest-slotscb78b.png)  
 ```java
-Inventory inv = Bukkit.createInventory(player, 6*9, "东方大陆真好玩"); 
+Inventory inv = Bukkit.createInventory(player, 6*9, "URARA!"); 
 //第一项是主人在这里, 可以设打开界面的玩家Player对象(还记得Inventory和箱子或玩家背包等一一对应吗)
 //第二项必须是 9n (n∈N+且1≤n≤6)
 //第三项是标题
@@ -165,7 +165,7 @@ p.openInventory(inv);
 @EventHandler
 public void onInventoryClick(InventoryClickEvent e){
 	//从这里可以看出来, 标题不是随意设置的, 我们经常用标题作为区分GUI的标志
-	if(e.getInventory.getTitle().equals("东方大陆真好玩"))
+	if(e.getInventory.getTitle().equals("URARA!"))
 		e.setCancelled(true); //这样玩家就没办法拿出来物品了
 		
 	//getRawSlot获得玩家点击的格子编号
