@@ -23,10 +23,7 @@ QQ: 2062748998 (可能因为上学不在, 如果在的话会回复)
 文档中代码均以Apache 2.0开源, 包括正文部分插入代码.  
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/cn/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/">知识共享署名-非商业性使用-禁止演绎 3.0 中国大陆许可协议</a>进行许可。
 
-若需转载本站内的资料，请详细注明出处.  
-本站内的**源代码(而不是文章)**基于MIT协议开源，但有如下补充协议：  
-1.若您使用源代码，视为您已接受最新的协议。最新的协议指MIT协议与本补充协议的最新版本。  
-2.禁止商业用途使用。  
+若需转载本站内的资料，请详细注明出处.   
 
 本站图片资源部分来自互联网，仅学习交流使用。  
 部分图片由**tdiant**绘制。  
