@@ -30,10 +30,7 @@ http://www.mcbbs.net/thread-138969-1-1.html
 # 环境配置
 在实际开发当中, 我们可以认为Bukkit、Spigot以及其衍生服务端(PaperSpigot等)都是一回事.  
 
-开发BukkitAPI插件需要准备一个用来开服的Jar文件, 相信对你不陌生. 推荐准备Spigot的服务端Jar文件.  
-您可以在下面的网址中轻松找到所有版本的Jar文件:  
-[https://tcpr.ca/](https://yivesmirror.com/)
-
+开发BukkitAPI插件需要准备一个用来开服的Jar文件. 推荐准备Spigot的服务端Jar文件.  
 然后你需要将该Jar文件当做“Libraries”文件导入至工程中即可开始开发.
 
 鉴于大多数Java入门教材并没有在开篇叙述如何引入Lib文件, 这里以Eclipse为例, 赘述引入方法:  

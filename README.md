@@ -49,5 +49,5 @@ QQ: 2062748998 (可能因为上学不在, 如果在的话会回复)
 由衷感谢他们的打赏, 这是对我最好的鼓励!  
 如果你希望打赏, 请访问: bdn.tdiant.net  
 
-[打赏感谢名单](https://blog.tdiant.net/about/ds.html)
+[打赏感谢名单](https://blog.tdiant.net/donate)
 
