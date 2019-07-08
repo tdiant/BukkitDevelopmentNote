@@ -52,7 +52,7 @@ author: tdiant
 上面的plugin.yml文件逐行分析如下：
 
 | 键 | 意义 | 备注 |
-| -----   | -----   | 
+| :-:   | :-:   | :- |
 | name | 插件名 | 可带空格, 不允许带有中文和空格, 推荐只含有下划线、英文. |  
 | main | 插件的完整主类名 | 例如我这里插件主类为tdiant.helloworld.HelloWorld, 此处则需填写tdiant.helloworld.HelloWorld. |  
 | version | 插件版本 | 您可以填写一个合理的String内容, 而不一定必须为数字, 例如可填写no_1. |  
