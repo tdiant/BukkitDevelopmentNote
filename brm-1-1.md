@@ -1,4 +1,4 @@
-<p style="font-size:24px;">最简单的插件</p>
+# 最简单的插件
 
 # Bukkit插件的本质
 Bukkit插件本质是一个基于BukkitAPI的Java应用.  

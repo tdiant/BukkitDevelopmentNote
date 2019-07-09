@@ -1,4 +1,4 @@
-<p style="font-size:24px;">深入plugin.yml</p>
+# 深入plugin.yml
 
 # 了解plugin.yml
 `plugin.yml`文件是Bukkit及其衍生服务端识别插件的重要文件.  
