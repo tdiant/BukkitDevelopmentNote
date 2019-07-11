@@ -125,6 +125,17 @@ public void onEnable(){
 执行后可发现, 插件配置文件夹中`config.yml`文件的`h`键内容已经成为`baka`.  
 `set`以后要记得`saveConfig`!
 
+如果配置文件中本来没有某个键，你可以直接使用set方法创建它.  
+如果配置文件里存在某个键，现在你想删去它，可直接使用set方法将其修改为null.  
+
+```java
+getConfig().set("d.f",null);
+saveConfig();  //这样在最终保存的配置文件里将不存在d.f键
+
+getConfig().set("d.aaabbb",6666);
+saveConfig();  //这样在最终保存的配置文件里将存在一个值为6666的d.aaabbb键，无论d.aaabbb键在之前的配置文件里有没有
+```
+
 ## 读取配置文件中数据
 我们可以使用`get`来读取数据.
 ```java
