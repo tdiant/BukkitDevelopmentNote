@@ -14,14 +14,10 @@ Bukkit.getPlayerExact("PlayerName");
 > 如果你翻看API, 你会发现存在`Bukkit.getPlayer("PlayerName");`这样的方法来获取.   
 > 但是这个方法会“模糊地”获取玩家.    
 > 假如服务器内有abc和ab这两个玩家, 如果你想获取abc的Player对象, 万一abc不在线, 你Bukkit.getPlayer("abc");返回的Player对象, 很有可能是ab的, 而不是abc的.   
-
-[与Player有关的方法 - JavaDoc](https://docs.windit.net/Chinese_BukkitAPI/org/bukkit/entity/Player.html)
   
 # 实体(Entity)  
 在MC中, 所有的生物, 例如一只羊, 乃至一个僵尸, 又或者是玩家, 都是生物, 他们都是Entity类型的对象.   
 这个概念还可以更加进一步的扩充, 一个被点燃的TNT, 实际上, 它也是一个实体(TNTPrimed).   
-
-[与Entity有关的方法 - JavaDoc](https://docs.windit.net/Chinese_BukkitAPI/org/bukkit/entity/Entity.html)
 
 # Material、ItemStack  
 > 提醒: Bukkit 1.13中, Material枚举发生了**翻天覆地的改动**, 导致以前的插件无法更好兼容1.13, 以前的教程可能与实际环境有出入.
@@ -70,6 +66,39 @@ item1.setItemMeta(im1);
 //下面这个是错误示范, 必须把im1 get得到后再set回去, 否则诸如下面这样无法生效
 item1.getItemMeta().setLore(loreList);
 ```
+
+# Location
+任何一个坐标都可由一个Location代表.  
+
+常见的实体对象是Entity的子类，故都提供了`getLocation`方法，返回的Location代表着它们的坐标位置.  
+值得一提的是，如果应用`getLocation`获取实体位置，那么获取的位置是它的脚. 例如`Player.getLocation()`所获取的是玩家的脚的位置.  
+对于这些实体对象，如果想修改他们所在的坐标位置，Bukkit没有提供`setLocation`方法，而是提供了`teleport`方法. 通过`teleport`方法可以传送某个实体.  
+
+Location对象的基本使用也十分简单.  
+
+**BlockLocation**  
+Location中提供了`getBlockLocation()`、`getBlockX()`、`getBlockY()`、`getBlockZ()`四个方法.  
+对于一个方块而言，其坐标的XYZ值均为整数，所以这些方法所获取的是此Location对应的最精确方块的坐标.  
+通俗的理解，可以认为获取的是将XYZ四舍五入后的坐标值.  
+`getBlock()`获取的此Location对应的最精确的方块的`Block`对象.  
+
+**坐标运算**  
+Location提供`add`（加）、`subtract`（减）方法.  
+
+**两点间距离**
+Location提供`distance`方法，参数为另一个Location，返回值为double，代表两点间距离.  
+*Location还提供`distanceSquared`方法，代表两点间的方块距离，遵循四舍五入.*  
+
+# Block
+任何一个方块都可以用Block对象表示.  
+
+在BukkitAPI中，任一世界里有且仅有一个方块对应着三个确切的XYZ值. 也就是一个坐标(XYZ都是整数)只对应一个方块.  
+
+`getType`与`setType`方法可以设置方块的类型.  
+*在1.9之前的版本还令设`getTypeId`与`setTypeId`方法. 随着Mojang官方废弃物品ID，BukkitAPI也废弃了这两个方法，并最终删除.*  
+
+# World
+在Minecraft中，每一个世界都是一个World对象. 一个World以若干Chunk（区块）组成.
 
 # Inventory
 对于玩家背包、箱子里存放的所有ItemStack对象, 我们可以认为他们都储存在了一个`Inventory`对象里.   
