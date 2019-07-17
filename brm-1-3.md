@@ -14,6 +14,11 @@ Bukkit.getPlayerExact("PlayerName");
 > 如果你翻看API, 你会发现存在`Bukkit.getPlayer("PlayerName");`这样的方法来获取.   
 > 但是这个方法会“模糊地”获取玩家.    
 > 假如服务器内有abc和ab这两个玩家, 如果你想获取abc的Player对象, 万一abc不在线, 你Bukkit.getPlayer("abc");返回的Player对象, 很有可能是ab的, 而不是abc的.   
+
+`Player`是`Entity`的子类. 这意味着`Player`对象是一个确切的实体，那么如果玩家下线，它在服务器内对应的实体便消失，也就不存在所谓的`Player`对象了.  
+因此，对一个下线的玩家使用`getPlayer`或`getPlayerExact`方法获取`Player`对象是无意义的. 这会得到null.  
+如果要表示一个确切的玩家，无论其是否在线，可以使用`OfflinePlayer`对象.  
+Bukkit中给出了`getOfflinePlayer`方法，你可以通过该方法获得一个`OfflinePlayer`对象.
   
 # 实体(Entity)  
 在MC中, 所有的生物, 例如一只羊, 乃至一个僵尸, 又或者是玩家, 都是生物, 他们都是Entity类型的对象.   
