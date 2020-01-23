@@ -49,7 +49,7 @@ public class HelloWorld extends JavaPlugin implements Listener{
 `PlayerQuitEvent` 事件可以监听玩家退出服务器, 这是一个不可控事件. 这可以实现监听到玩家退出服务器, 并且在后台输出`玩家退出了！`的字符串.   
 
 在`onEnable`方法中, `registerEvents`方法注册了该监听器.   
-*registerEvents方法的第一个参数是插件主类的实例, 第二个参数是监听器. 在这里主类就是监听器. 具体你可以在后面了解到*.    
+*registerEvents方法的第一个参数是监听器，第二个参数是插件主类的实例. 在这里主类就是监听器. 具体你可以在后面了解到*.    
 
 监听器中带有`@EventHandler`的方法一个只能监听某一个事件, 而不能监听多个事件!
 
@@ -178,7 +178,7 @@ Bukkit.getPluginManager().registerEvents(this,this);
 当时解释的是, `registerEvents`方法注册了该监听器.  
 如果没有这样的注册语句, 那么Bukkit就不会在事件触发时调用监听器类的对应方法.  
 
-该方法的第一个参数是插件主类的实例, 第二个参数是监听器. 当时由于我们为了偷懒, 直接把主类实现了`Listener`作为监听器, 因此我们可以这样写.    
+该方法的第一个参数是监听器, 第二个参数是插件主类的实例. 当时由于我们为了偷懒, 直接把主类实现了`Listener`作为监听器, 因此我们可以这样写.    
 可我们不能写插件的时候把代码都堆在主类中. 这也就意味着, 我们可以把其他类实现`Listener`, 用同样的方式注册它, 这样我们就可以把监听事件部分的代码放在别的地方, 使插件代码更有条理性.     
 
 我们新创建一个类, 让它实现`Listener`, 再写对应的方法监听玩家移动, 就像这样:  
@@ -192,7 +192,7 @@ public class DemoListener {
 ```
 现在我们在主类的`onEnable`方法里, 就可以注册它了!  
 ```java
-Bukkit.getPluginManager().registerEvents(this,new DemoListener());  
+Bukkit.getPluginManager().registerEvents(new DemoListener(), this);  
 ```
 
 # 常用事件简介
