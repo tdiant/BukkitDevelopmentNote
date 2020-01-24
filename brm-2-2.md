@@ -16,12 +16,13 @@
 
 我们就先新建一个类`RuaEvent`, 让其继承`org.bukkit.event.Event`类. 在该类中写下这些固定代码:  
 ```java
-public class RuaEvent{
+public class RuaEvent extends Event{
 	private static final HandlerList handlers = new HandlerList();
 	@Override
 	public HandlerList getHandlers() {
 		return handlers;
 	}
+
 	public static HandlerList getHandlerList() {
 		return handlers;
 	}
@@ -43,7 +44,7 @@ public class RuaEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();
 	private Player p;
 
-	public RuaEvent(Player P){
+	public RuaEvent(Player p){
 		this.p = p;
 	}
 	
@@ -71,7 +72,7 @@ public class RuaEvent extends Event implements Cancellable{
 	
 	private boolean cancelledFlag = false;
 
-	public RuaEvent(Player P){
+	public RuaEvent(Player p){
 		this.p = p;
 	}
 	
@@ -88,10 +89,12 @@ public class RuaEvent extends Event implements Cancellable{
 		return handlers;
 	}
 	
+	@Override
 	public boolean isCancelled() {
 		return cancelledFlag;
 	}
 	
+	@Override
 	public void setCancelled(boolean cancelledFlag) {
 		this.cancelledFlag = cancelledFlag;
 	}
@@ -100,19 +103,30 @@ public class RuaEvent extends Event implements Cancellable{
 
 如果是不可取消的事件, 无需实现`Cancelled`.  
 截止到现在, `RuaEvent`已经自定义成功, 现在我们只需要做第二步即可:  
+
+1. 如果RuaEvent是个不可取消事件  
+
 ```java
 @EventHandler
 public void onPlayerChat_DEMO1 (PlayerChatEvent e){ //如果RuaEvent是个不可取消事件
 	if(e.getMessage().equals("rua"))
 		Bukkit.getServer().getPluginManager().callEvent(new RuaEvent(e.getPlayer())); //触发事件
 }
+```
 
+2. 如果RuaEvent是个可取消事件  
+
+```java
 @EventHandler
 public void onPlayerChat_DEMO1 (PlayerChatEvent e){ //如果RuaEvent是个可取消事件
-	if(e.getMessage().equals("rua"))
+	if(e.getMessage().equals("rua")){
 		RuaEvent event = new RuaEvent(e.getPlayer());
 		Bukkit.getServer().getPluginManager().callEvent();
 		if(event.isCancelled()) //这里加判断即可
 			e.setCancelled(true);
+	}
 }
 ```
+
+*在这里监听了**PlayerChatEvent**，但是此事件已被标记@Deprecated，实际的开发过程中不推荐监听此事件.*    
+*实际开发中建议监听的是**AsyncPlayerChatEvent**事件. 注意这是异步监听，用法基本类同于上述事件的监听，具体请参见JavaDoc.*  
