@@ -1,95 +1,126 @@
-# 粒子效果及音效播放
+# 世界生成器
 
-**感谢**  
-在完成本节时，内容安排与内容撰写，以及示例代码都参考了**602723113**的文章并且获得了其宝贵指导.  
-下面这篇文章同样是十分优秀的文章.  
-http://www.mcbbs.net/thread-783358-1-1.html
+> 本章编写参考了如下内容, 这篇文章对于插件开发而言十分重要:  
+> https://www.mcbbs.net/thread-811614-1-1.html
 
-# 几何初步
+> [如果你对Minecraft 1.13中世界生成机制大改动感兴趣, 可以点击这里.](https://www.mcbbs.net/thread-846195-1-1.html)     
+>  并且, [对于Minecraft 1.13之前版本的世界生成阐述, 可以见此文](https://www.zhihu.com/question/20754279)  
+>   
+> *在Bukkit中, 截止到目前, BukkitAPI仍沿用旧有规则的API.*  
+> *这意味着本文内容截止目前对于新版本的插件开发仍然有效.*  
 
-几何基础知识是做特效的基础内容，应当了解。  
-**作者高中数学没及过格，这里内容仅供参考。**  
-**若您了解相关内容或接受了高中数学的有关学习，您可以跳过这部分内容。**  
-*不建议跳过这部分内容。*  
+本文中使用了`Material.GRASS_BLOCK`, 这是1.13版本的新用法.   
+在旧版API中, 应该使用`Material.GRASS`.  
 
-限于篇幅，若需要查看请点击下方链接:  
-[几何初步](brm-2-8-math.md)
+# 简述世界生成
 
+Minecraft中, 一个世界(World)按照一定的大小被分为多个区块(Chunk).  
+MC会自动地按照一定的规则卸载无人Chunk, 在需要的时候加载所需的Chunk到内存, 以此来保证一个World被加载到内存, 这样不至于整个World都需要加载到内存以备调用.  
+世界的生成同样以Chunk为单位.
 
-# 粒子效果
+Minecraft游戏中, 世界生成分为两个阶段, 分别为 Generation 与 Population.  
 
-客户端正常配置时，若对草方块上使用骨粉，草方块上会长出草丛，同时还会生成绿色的颗粒动画. 这样的动画效果就是Minecraft中的粒子效果.  
+Minecraft生成一个World, 首先进入 Generation 阶段. 这一阶段主要是绘制地形等.  
+1. Minecraft首先会获取该Chunk中包含的所有生物群系. 然后会根据特定的生物群系绘制基本的地形. 地形的绘制依靠了一些特殊的算法, 游戏通常会以高度63作为水平面, 通过这些特殊算法绘制基本的地形. 绘制完毕后, 整个世界只有空气、水和石头.  
+2. 接着会在高度0-5范围内生成基岩, 并逐个对各个生物群系添加特有的方块. 例如, 对平原添加草方块和泥土, 对沙漠添加沙子和沙石等.  
+3. 再然后会生成特殊地形. 这里的特殊地形指的是涉及到多个区块的大型地形, 例如规模很大的洞穴、村庄、矿井等.  
+4. 最后会进一步处理, 做最后的准备收尾工作, 至此Generation阶段完毕.  
 
-## 播放粒子效果
-如果想在某一个`Location`对象所对应的位置播放粒子效果，对于不同的Minecraft版本有不同的方案：  
+Generation阶段完成, 意味着该世界的整体结构已经定型. 但是这个世界上还缺少“点缀”. 这个世界上仍然没有树、生物、沼泽上的荷叶、水边的甘蔗等. 此时进入 Population 阶段.  
+1. 首先会对该世界的实体进行完善, 并生成各种各样的特殊的方块(指的是箱子等方块实体, 这些方块与其它方块相比复杂许多).  
+2. 然后会生成小型地形. 比如一些地表小水坑、地表岩浆池、地下地牢等.  
+3. 然后会在地下按照一定的规则生成矿物.  
+4. 最后增加地面点缀, 生成水边的甘蔗、沼泽上的荷叶、地面大蘑菇和树木等物, 并增加一些生物群系特定物, 生成一些基础生物(比如牛、鸡、羊等).  
 
-### PlayEffect
-可以利用World类的`PlayEffect`方法:  
-*对于Effect，BukkitAPI在后续的更改中，其中的枚举几乎都或多或少有些许改动。开发时应小心。*  
+待 Population 阶段结束后, 该Chunk的数据便会存储起来, 显示出来.  
+
+# 干涉Population
+
+Bukkit中, 在世界初始化前会触发`WorldInitEvent`事件. 监听该事件, 我们可以对该世界生成的 Population 阶段进行干涉.  
+
+在下面的案例中, 我们将在Chunk的 Population 阶段, 在世界的草方块上人为的添加许多钻石块(DIAMOND_BLOCK).  
 
 ```java
-Location loc = 某一Location对象;
-loc.getWorld.playEffect(loc, Effect.HAPPY_VILLAGER, 1); //播放的是绿色的闪光星星⭐效果
+public class WorldListener implements Listener {
+    @EventHandler
+    public void onWorldInit(WorldInitEvent e){
+        if(e.getWorld().getName().equals("World"))
+            e.getWorld().getPopulators().add(new RuaPopulator());
+    }
+}
+
+class RuaPopulator extends BlockPopulator {
+    @Override
+    public void populate(World w, Random r, Chunk c){
+        final int maxn = 16; //一个区块的X或Y范围是0-16
+        for(int i=0; i<12; i++){ //这里打算一个区块生成12个
+            int x = r.nextInt(maxn), z = r.nextInt(maxn);
+            for (int y = 125; y > 0; y--) {
+                if (c.getBlock(x, y, z).getType() == Material.GRASS_BLOCK && c.getBlock(x, y + 1, z).getType() == Material.AIR) {
+                    c.getBlock(x, y + 1, z).setType(Material.DIAMOND_BLOCK);
+                    break;
+                }
+            }
+        }
+    }
+}
+
 ```
 
-`PlayEffect`方法在较早的BukkitAPI版本中即被加入. 在使用这一方法时需要与`Effect`打交道.  
-`Effect`是效果枚举. 值得注意的是，这其中既包含动效(Effect.Type.VISUAL)，也包含声效（Effect.Type.SOUND）.  
+最终效果如下:  
 
-***作为一个老旧的API，在实际开发当中，这一方法并不常用. 其中的常见枚举（例如这里使用的HAPPY_VILLAGER）在新的API中被标记废除.***
+![](https://i.loli.net/2020/02/08/AkEZ7VuOv8wWjKm.jpg)
 
-### spawnParticle
-在新版的API中加入了`spawnParticle`方法. 目前开发插件常用这一方法来播放粒子效果.  
+可以发现, 生成的world中, 按照我们的设定, 在地表草方块上零散的分布了钻石块.  
+这说明在Bukkit中, 你可以创建一个BlockPopulator对象, 在世界初始化时添加为某一World的Populator, 依此来干涉Population阶段.  
+*Bukkit中的Populator只有BlockPopulator一种.*   
+*但是你可以以此类推, 通过这种方式实现在地面随机生成某种建筑等其他效果.*
 
-新版的BukkitAPI有意将`Sound`与`Visual`这两个概念分隔开，对于粒子效果，在使用`spawnParticle`方法时，取`Effect`而代之的是`Particle`枚举.
+值得注意的是, 在自定义的Populator中, populate方法的参数中有一个传入的Random对象.  
+这是为了让随机数的生成符合World对应的种子. 在需要生成随机数的时候, 应尽可能使用方法参数中的Random对象.  
 
-*spawnParticle的用法较多，在此略去大篇幅对各个方法与参数的介绍，可以查阅JavaDoc，其中有十分简单易懂的注释.*  
-*BukkitAPI后续更新中，枚举或多或少都有变动，应当注意！*
+# 控制Generation
 
-## 播放所需的形状
-
-> 开发实例: 在玩家脚底播放一圈半径为1的粒子效果
-
-**分析**  
-1. 几何角度考虑  
-
-以玩家脚底处为原点，建立平面直角坐标系. 如下图所示:  
-![](https://i.loli.net/2019/07/12/5d2893acab56b12879.jpg)
-
-*绿色部分为粒子效果*
-
-由圆的定义知，所绘制的粒子为到原点的点集.
-
-2. 实现
-播放想要的形状就是逐次的在所需播放的坐标处播放粒子效果.
-
-*这里将不解释什么是弧度制，而是做强制要求，只要算角度都必须用这样的方法变为弧度制，有兴趣可以在网上查阅*  
+通过控制一个世界的Generation, 我们可以控制世界的大体地形.  
+下面我们将在插件加载时, 生成一个新的世界`RuaWorld`, 这个世界是一个超平坦世界, 第一第二层为基岩, 第三层为草方块.  
 
 ```java
-Location loc = p.getLocation().clone();
-for(int t=0;t<360;t++){ //这里的t表示旋转角，从0到360度遍历一遍就是转了一圈
-    double r = Math.toRadians(t); //角度制变弧度制
-    //在这里，我们使用三角函数依次计算出了对应点的坐标.
-    //建议作图体会这样计算的原理.
-    double x = Math.cos(r);
-    double y = Math.sin(r);
-    //在刚开始时，loc是坐标系原点（也就是玩家所在的位置）
-    //这里我们的add将其变为了我们想要播放粒子的坐标位置
-    //后面我们又subtract（减）将其又变为了坐标原点
-    loc.add(x,0,y);
-    loc.getWorld().spawnParticle(Particle.VILLAGER_HAPPY,loc,1,null);
-    loc.subtract(x, 0, y);
+public class Main extends JavaPlugin {
+    public void onEnable(){
+        Bukkit.getPluginManager().registerEvents(new WorldListener(),this);
+        Bukkit.createWorld(new WorldCreator("RuaWorld").generator(new RuaChunkGenerator()));
+    }
+
+    public void onDisable(){
+        //
+    }
+}
+
+class RuaChunkGenerator extends ChunkGenerator {
+    @Override
+    public ChunkData generateChunkData(World w, Random r, int x, int z, BiomeGrid b) {
+        ChunkData chunkData = createChunkData(w); //创建区块数据
+
+        //下面这行方法调用参数中, 前三个参数代表一个XYZ对, 后面又是一个XYZ对.
+        //这两个XYZ对是选区的意思, 你可以结合Residence插件圈地、WorldEdit选区的思路思考.
+        //提醒: 一个Chunk的X、Z取值是0-16, Y取值是0-255.
+        chunkData.setRegion(0, 0, 0, 16, 2, 16, Material.BEDROCK);  //填充基岩
+        chunkData.setRegion(0, 2, 0, 16, 3, 16, Material.GRASS_BLOCK); //填充草方块
+        
+        //将整个区块都设置为平原生物群系(PLAINS)
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j < 16; j++) {
+                b.setBiome(i, j, Biome.PLAINS);
+            }
+        }
+        return chunkData;
+    }
 }
 ```
 
-这样我们就完成了这一效果.
+![](https://i.loli.net/2020/02/08/yTaJ1z7A2j4dkB6.jpg)  
 
-依此，可以大致概括出实现粒子效果的基本步骤:  
-1. 分析: 从数学角度分析, 思考怎么才能获得所需形状中所有的点；从代码角度分析，思考怎样才能依此获得这些点的坐标值
-2. 实现：利用恰当的方法播放粒子效果
+![](https://i.loli.net/2020/02/08/6wiDNdl8y3AmJFh.jpg)
 
-# 音效播放
-由于`Effect`既包含动效，也包含声效，这意味着使用与上面`PlayerEffect`方法一样的方法，我们也可以播放音效.
+我们进入`RuaWorld`世界, 可以发现世界按照我们所需要的地形生成了.  
 
-在新API中提供了`playSound`方法并且加入了`Sound`枚举. 目前常用这一方法. 这一方法是World也同样是Player类的方法, 具体使用哪一方法，取决于你希望对谁播放.
-
-*BukkitAPI后续更新中，枚举或多或少都有变动，应当注意！*

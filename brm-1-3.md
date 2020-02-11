@@ -141,11 +141,10 @@ inv.clear(); //清空整个inventory
 ```
 
 ## 箱子GUI
-![](http://www.miao.su/images/2018/08/15/QQ20180815172208834e3.png)  
-这里面展示的是其服务器某一功能的 箱子GUI 效果.  
 
-如何制作一个这样的箱子GUI呢?  
+服务器里经常会利用箱子的GUI做“按钮菜单”功能. 如何制作一个这样的箱子GUI呢?  
 ![](http://www.miao.su/images/2018/08/15/DoubleChest-slotscb78b.png)  
+
 ```java
 Inventory inv = Bukkit.createInventory(player, 6*9, "URARA!"); 
 //第一项是主人在这里, 可以设打开界面的玩家Player对象(还记得Inventory和箱子或玩家背包等一一对应吗)
