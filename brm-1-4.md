@@ -1,5 +1,8 @@
 # 认识配置文件
 
+> 最开始的版本被吐槽太复杂啰嗦, 因此所以这一章的内容被重新改写.  
+> [最开始的版本请点击本行文字.](brm-1-4-old.md)
+
 ## 配置文件
 配置文件用来储存配置信息, 以便使用文件开关功能、储存数据、修改信息.  
 我们往往需要读写配置文件. Bukkit为我们提供了配置API.   
@@ -7,187 +10,167 @@
 ## 配置API
 配置API是BukkitAPI提供的读写配置文件的工具. 其相对而言较为简单, 是插件开发中常用的API.  
 
-目前为止, 配置API只有YAML配置功能可用. 这也是大多数插件为什么配置文件是YAML文件的原因.  
-在本文中, 我们也将使用YAML配置API.   
-
+*目前为止, 配置API只有YAML配置功能可用. 这也是大多数插件为什么配置文件是YAML文件的原因.  
+在本文中, 我们也将使用YAML配置API.*   
 *现在的配置API的类均在 `org.bukkit.configuration` 和 `org.bukkit.configuration.file` 包中. 在早期版本(MC 1.1以及之前), 这些东西都在`org.bukkit.util.configuration`包, 而并非上面的这两个包.*   
 
 # 了解YAML文件
 
+## 键值对
+
 相信开服的经验已经使你对YAML文件有了初步认识.  
 YAML文件的文件后缀是`.yml`. 其配置文件结构需要严格遵守YAML标准.  
 
-下面即是一个符合标准的YAML配置文件的内容:  
-~~~
-a: 1
-b: "abc"
-c: abc
-d:
-  e: true
-  f: 666.233
-  g:
-  - '2333'
-  - '998'
-~~~
+下面是一个符合标准的YAML配置文件的内容:  
 
-在本节中, 我们暂不学习如何使用配置API读写配置文件. 首先对YAML配置文件做简单了解.    
-
-第一行 `a: 1` 代表`a`键(Key)对应的值(Value)为`1`.  
-在读写YAML配置文件时, 需要知道键, 由键获取这个键对应的数据.  
-
-在d键中, 存在e、f、g三个子键, 相信你可以**根据空格看出来谁是谁的子键**, 其对应的名称分别为`d.e`、`d.f`、`d.g`.  
-也就是说, 我们想获取那个现在值为`true`的键对应的数据, 应该获取键`d.e`的数据.
-
-子键也可以有其子键, 例如:
-```yml
-a:
-  b:
-    c:
-	  d:
-	    e:
-		  f:
-		    g: 233
-```
-那么`a.b.c.d.e.f.g`键的值为`233`.  
-
-回到第一份YAML配置内容中.  
-`a`键对应的值是`1`, `1`可以代表是一个数字, 也可以代表是一个字符串.  
-这意味着, 字符串在一些情况下可以不必带有引号.  
-*那我在实际使用配置API的时候获取到的`a`键值究竟是什么类型? 具体会在后面提及.*  
-
-`d.e`键对应的值是一个boolean类型数据.  
-`d.g`键对应的是一个StringList类型数据.
-
-YAML中字符串可以用双引号表示, 也可以使用单引号表示, 但是不能一半是双引号, 一半是单引号.  
-YAML中注释使用#, 类似Java中的//, 请看下面的实例:
-```yml
-#我是注释
-a: 'abc' #这是一个字符串abc
-b: "def" #用双引号也可以
-c: 'hji" #这样不可以
-d: '""' #这是字符串, 内容是一对英文双引号
-e: "''" #这是字符串, 内容是一对英文单引号
+```yaml
+Settings:
+  DebugMode: true
+  Time:
+    CoolDown: 10
+Data:
+  player1:
+    NickName: HandsomeBoy
+    Score: 50
+    TotalTime: 40
+    Title:
+    - Toilet Protecter
+    - Widow Maker
+    - Chicken Fucker
 ```
 
-# 感受配置API的使用
-在后面的内容中, 将详细叙述配置API的使用方式. 在这里, 通过一个实例来感受配置API的使用方式.
+相信你可以**根据空格看出每个项目之间的所属关系**, 如下:  
 
-首先我们需要创建`config.yml`文件. 默认的`config.yml`文件要与`plugin.yml`文件处于同一目录下. 在这里我们在默认`config.yml`文件中存入这些信息:  
-```yml
-a: 1
-```
-完成后, 我们需在`onEnable`方法中插入这样的语句:
-```java
-saveDefaultConfig(); //我建议这个东西写在主类onEnable方法开头那里或者onLoad方法里
-System.out.println("Hello! Test Number is "+getConfig().getInt("a")); //输出文件
-```  
-插件加载后, 可以发现控制台输出:
-```
-Hello! Test Number is 1
+![](pics/1-4-pic1.jpg)
+
+**我们把上面所属关系图中, 矩形框内的东西叫做键(Key)**. 例如, `Settings`是一个键, `Data`是个键. **在`Settings`键下存在`DebugMode`、`Time`两个子键, 它们分别叫做`Settings.DebugMode`键和`Settings.Time`键**. 同理, 在`Settings.Time`键下还有`CoolDown`这个子键, 这个子键叫`Settings.Time.CoolDown`键.  
+
+我们可以用这样的命名方法来称呼一个YAML文件中的任一一个键了. 并且还可以根据名称看出所属关系.  
+例如, `Data.player1.Score`键对应的值是 `50`.
+
+在YAML中, 键和值一一对应, 一个键一定会有一个值.
+
+## 数据类型
+
+通常可以用配置文件存储一些基本类型(int、double、boolean)、String、StringList和被序列化的对象.  
+
+Bukkit中给出的一些对象有些是可以直接存进配置文件的, 这需要看这个类是不是实现了`ConfigurationSerializable`接口. 例如, `Player`类型的对象就可以被直接存入配置文件, 因为查阅JavaDoc后可以发现它实现了`ConfigurationSerializable`.  
+
+![](pics/1-4-pic2.jpg)
+
+*后续会详细介绍, 这里需要知道判断方法.*
+
+在上面的配置文件中, 配置文件里储存了:  
+1. 存储了一个`boolean`类型的值(`Settings.DebugMode`键).  
+2. 存储了一些数字类型的值(存了好几个).  
+3. 存储了一个`String`字符串(`Data.player1.NickName`键).  
+4. 存储了一个`StringList`(YAML里的`StringList`就是Java中的`List<String>`, 例如`Data.player1.Title`键).  
+
+YAML中注释以`#`表示.  
+```yaml
+#就像这样写注释, 配置文件读取时会忽略掉注释
+Settings:
+  DebugMode: true
 ```
 
-在plugins文件夹中生成了以插件名为名的文件夹, 打开该文件夹里的config.yml文件, 并将其中的`a`键改为其他整数后使用reload指令, 可以显示该数值.
+相信你可以通过这个例子明白配置文件中可以储存哪些数据了.
 
-# 基本用法(操作config.yml)
-## 默认配置文件
-每个插件都可以有一个`config.yml`文件作为其配置文件.  
-我们首先需要准备一份默认配置文件, 也就是插件放进`plugins`文件夹后第一次被加载自动生成的配置文件.  
+## 对于不存在的数据
 
-首先我们需要创建`config.yml`文件. 默认的`config.yml`文件要与`plugin.yml`文件处于同一目录下. 在这里我们在默认`config.yml`文件中存入这些信息:  
-```yml
-a: 1
-b: "abc"
-c: abc
-d:
-  e: true
-  f: 666.233
-  g:
-  - '2333'
-  - '998'
-```
-完成后, 我们需在`onEnable`方法中插入这样的语句:
-```java
-saveDefaultConfig(); //我建议这个东西写在主类onEnable方法开头那里或者onLoad方法里
-```
-该语句需要保证在读写配置文件之前被执行.  
-它可以自动判断插件配置文件夹中是否存在`config.yml`文件, 在没有的时候将该插件jar文件的根目录中`config.yml`保存至插件配置文件夹.
+很明显, 上面的配置文件中, 并没有`Data.player2.NickName`键, 那么如果我非要获取`Data.player2.NickName`键的值, 获取到的数据是什么呢?  
+答案是null. 换句话说, **YAML里所有不存在的键, 值是null.**  
 
-## 写入配置文件
-让我们尝试写入配置文件, 在`onEnable`方法被调用时把配置文件中键`h`改为字符串`baka`.  
-我们可以这样做:
-```java
-public void onEnable(){
-    this.saveDefaultConfig();
-	this.getConfig().set("h","baka");
-	this.saveConfig();
-}
-```
-执行后可发现, 插件配置文件夹中`config.yml`文件的`h`键内容已经成为`baka`.  
-`set`以后要记得`saveConfig`!
+请记住这句话. 我们可以根据这个原理推导出, 如果你想删除一个已经存在的键, 那就是把这个键的值设置为null.
 
-如果配置文件中本来没有某个键，你可以直接使用set方法创建它.  
-如果配置文件里存在某个键，现在你想删去它，可直接使用set方法将其修改为null.  
+# 操作配置文件
+
+这里的配置文件指的是`config.yml`文件.  
+首先我们需要准备一个默认的`config.yml`文件. 这个文件会在插件检测到`plugins\插件名`文件夹下没有`config.yml`文件时被放入该文件夹中.  
+在插件jar文件里, 默认的`config.yml`文件要与`plugin.yml`文件处于同一目录下, 所以创建默认`config.yml`的方法与创建`plugin.yml`文件的操作方法一致. 在这里我们在默认`config.yml`文件中存入我们一开始举的例子.
+
+## 读取config.yml数据
+ 下面做一个插件, 在玩家登陆服务器时, 给玩家显示配置文件`Data.玩家名.Score`键对应的值.
 
 ```java
-getConfig().set("d.f",null);
-saveConfig();  //这样在最终保存的配置文件里将不存在d.f键
-
-getConfig().set("d.aaabbb",6666);
-saveConfig();  //这样在最终保存的配置文件里将存在一个值为6666的d.aaabbb键，无论d.aaabbb键在之前的配置文件里有没有
-```
-
-## 读取配置文件中数据
-我们可以使用`get`来读取数据.
-```java
-public void onEnable(){
-    this.saveDefaultConfig();
-	System.out.println(getConfig().get("a"));  //这里的get方法返回Object类型数据
-}
-```
-后台将`a`键的值, 也就是将会输出`1`.
-
-对于不同的数据, 配置API给出了不同的get方法. 例如 `getString`、`getBoolean`、`getDouble`、`getInt`等.  
-
-还记得前面的那个"类型问题"吗? `a`键的值究竟是什么数据类型呢?   
-答案已经揭晓, 取决于你使用的是哪个get方法. 如果使用`getString`获取`a`键的值, 那么获取到的将是`String`类型, 如果是`getInt`, 那么就是`int`类型, 如果是`getDouble`, 那么就是`double`类型......
-
-对于`d.g`键, 其内容这样获取:
-```java
-List<String> list = getConfig().getStringList("d.g");
-```
-
-## 在其他类中操作配置文件
-我们已经知道如何注册监听器. 那么我们免不了遇到在其他类中操作配置文件的情况.  
-然而你会发现, `getConfig`方法并不是static(静态)的. 我们不能直接在其他类操作配置文件.    
-
-如果你有一些Java开发常识, 此时你可能意识到了, 我们需要做一个静态的主类实例才行.  
-在这里赘述一种我自己喜欢用的方式. 这是一个经过处理的主类, 有两处需要注意:  
-```java
-public class HelloWorld extends JavaPlugin{
-    private static HelloWorld INSTANCE;
-	
-	public void onEnable(){
-	    INSTANCE = this; //这个推荐放在最最最开头
-		......
-
-    ......
-	
-	public static HelloWorld getInstance(){
-	    return INSTANCE;
-	}
+public class HelloWorld extends JavaPlugin implements Listener{
+    public void onEnable(){
+        saveDefaultConfig(); //这个代码会自动判断插件配置文件里是不是有config.yml, 没有就会放入默认的config.yml
+        Bukkit.getPluginManager().registerEvents(this,this);
+    }  
+  
+    public void onDisable(){}
+  
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent e){
+        //在这里我们监听了PlayerJoinEvent, 并操作`config.yml`
+        String key = "Data." + e.getPlayer().getName() + ".Score"; //这是我们要获取的键名
+        int score;
+        if(getConfig().contains(key)){ //先判断一下有没有这个键
+            score = getConfig().getInt(key); //有的话读取
+        } else {
+            score = 0; //没有的话就按0处理
+        }
+        e.getPlayer().sendMessage("你的积分是: " + score); //然后给玩家发送
+    }
 }
 ```
 
-然后你就可以在其他类中这样操作配置文件:
+这里想说明, 如果你用`getConfig().getString(key)`获取玩家数据`Score`键的值, 那么获取到的就是一个String字符串.  
+也就是, 一个键对应的值是什么数据类型, 完全取决于你用的getter是什么.  
+
+## 写入数据到config.yml
+
+我们再来做个"加分项", 玩家挖掉一个石头后, 给他加分.
+
 ```java
-HelloWorld.getInstance().getConfig().你要做的各种操作
-HelloWorld.getInstance().saveConfig(); //写入配置文件内容了以后记得保存!
+public class HelloWorld extends JavaPlugin implements Listener{
+    public void onEnable(){
+        saveDefaultConfig();
+        Bukkit.getPluginManager().registerEvents(this,this);
+    }  
+  
+    public void onDisable(){}
+  
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent e){
+        //这里代码跟上面是一模一样的, 这里只是做了简化, 因为原先的if占篇幅太大
+        String key = "Data." + e.getPlayer().getName() + ".Score";
+        int score = getConfig().contains(key)?getConfig().getInt(key):0;
+        e.getPlayer().sendMessage("你的积分是: " + score);
+    }
+
+//如果你真的要写做个插件, 一定要小心, 判断一下BlockBrekaEvent是不是被其他插件取消掉了. 这里只是个例子, 并没有去判断
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent e){
+        if(e.getBlock().getType() == Material.STONE){ //判断类型, 是石头
+            String key = "Data." + e.getPlayer().getName() + ".Score";
+            int score = getConfig().contains(key)?getConfig().getInt(key):0; //这是获取玩家当前积分, 这么写是因为写个if占得行数太多, 如果不理解, 建议写成一开始我们提到的if
+            getConfig().set(key,score + 10); //挖一个石头加10分
+
+            //但是写到这里要小心！你只是修改了内存上的数据, 你没有修改硬盘上的config.yml文件里的数据！
+            saveConfig(); //所以要注意, 修改数据要记得保存
+        }
+    }
+}
 ```
+
+由此, 你需要小心, **getConfig()的内容是内存上的内容, 修改它并没有修改硬盘上的内容, 关服就会消失, 因此要注意保存！**
+
+`set`不区分数据类型是什么, 存储数据全部都用`set`方法. `set`不管这个键在配置文件里存不存在, 都会写入这个数据.
+
+还记得我们一开始说的"YAML里所有不存在的键, 值是null"吗? 如果你想删除掉`player3`的数据, 那你应该写成:  
+
+```java
+getConfig().set("Data.player3",null);
+```
+
+这样配置文件里`Data`键下就没有`player3`的数据了,也就达到了删除一个键的目的.
+
 # 操作自定义的配置文件
 关于非`config.yml`的YAML文件的操作, 有很多种方式可以做到.  
 下文叙述的是其中的一种.
 
-## 默认配置文件
+## 准备默认配置文件
 我们还是需要像`config.yml`那样准备一份默认配置文件, 放在与plugin.yml相同目录下. 不同的是, 除了`saveDefaultConfig`以外, 我们还需要其他的代码来保存默认配置文件.  
 
 例如我们有`config.yml`和`biu.yml`两个配置文件, 插件加载时应该这样生成默认配置文件:  

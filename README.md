@@ -5,12 +5,12 @@
 **阅读本文需要Java基础.**
 
 # 聊天
-来这里一起HAPPY!(群里面只有我一个人很孤单的!  
+来这里一起HAPPY!(需要活跃气氛的, 最好是那种特别能聊天的  
 Q群: 861294270  
-~~但是我常年住在学校! 不一定有空回答你问题! emmmmmmm~~
+~~我常年住校! 不一定有空回答你问题! emmmmmmm~~
 
 # 版权声明
-本站内容作者为 tdiant **和以下感谢的这些朋友**. 部分文献资料若涉及转载或引用, 将会在相关内容处标记.  
+本站内容作者为 tdiant **和以下所感谢的这些朋友**. 部分文献资料若涉及转载或引用, 将会在相关内容处标记.  
 
 文档中代码均以Apache 2.0开源, 包括正文部分插入代码.  
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/cn/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/">知识共享署名-非商业性使用-禁止演绎 3.0 中国大陆许可协议</a>进行许可。
@@ -39,7 +39,5 @@ Q群: 861294270
 
 ## 感谢您的打赏
 由衷感谢他们的打赏, 这是对我最好的鼓励!  
-如果你希望打赏, 请访问: https://blog.tdiant.net/donate  
-
-[打赏感谢名单](https://blog.tdiant.net/donate)
+如果你希望打赏, 请访问: https://afdian.net/@tdiant
 

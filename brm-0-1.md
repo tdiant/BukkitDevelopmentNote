@@ -6,8 +6,11 @@
 ## 最起码你需要有的东西
 
 ### Java基础
-插件开发对Java语言能力要求并不高, 通常情况下插件开发只会用到最基础的Java语法知识, 且开发环境搭建极其简单.  
-但本教程不针对Java初学者. 在本教程中, 将会尽可能避免较为复杂的Java语法知识.  
+**插件开发对Java语言能力要求并不高**, 通常情况下插件开发只会用到最基础的Java语法知识, 且开发环境搭建极其简单.  
+但是**不会Java的新手绝对不会开发插件, 也绝对弄不明白如何开发插件.**  
+本教程**不针对Java初学者**. 在本教程中, 将会尽可能避免较为复杂的Java语法知识.  
+
+![](https://attachment.mcbbs.net/forum/202001/13/104548gnc7nno7vsp7sl7v.jpg)
 
 这些Java基础内容你可以在网上、书籍中和一些现有的文献中学习到.   
 
@@ -25,12 +28,33 @@
 
 希望你在实际开发中能够“脑洞大开”, 想出别人想不到的内容, 想出能打本文作者脸的好办法、新思路!
 
+# 认识BukkitAPI
+
+在很早以前, Minecraft只有官方服务端.  
+
+因为官方服务端开启的服务器无法安装插件, 无法拓展游戏功能. 因此, 一个团队创造出了Bukkit服务端. Bukkit服务端本质是修改了官方服务端的代码, 实现了插件系统.  
+
+然而Bukkit服务端涉及了诸多法律问题. 最后Bukkit服务端停止更新.  
+
+后续SpigotMC社区的大神MD_5延续并接手BukkitAPI的维护工作, 他在BukkitAPI的基础上做出Spigot服务端. 此后有许多衍生服务端都在Spigot的基础之上被研发出来.  
+
+由此而看, BukkitAPI并不是只有Bukkit服务端才能用, 其衍生出的Spigot等诸多衍生服务端都能用.  
+
 # 了解插件开发
 
-在实际开发当中, 我们可以认为Bukkit、Spigot以及其衍生服务端(PaperSpigot等)都是一回事.  
+在实际开发当中, 我们可以认为Bukkit、Spigot以及其衍生服务端(Paper等服务端)都是一回事.  
 
-开发BukkitAPI插件需要准备一个用来开服的Jar文件. 推荐准备Spigot的服务端Jar文件.  
+开发BukkitAPI插件只需要准备一个用来开服的Jar文件. 推荐准备Spigot的服务端Jar文件.  
 然后你需要将该Jar文件当做“Libraries”文件导入至工程中即可开始开发.
 
 对于BukkitAPI相关的问题, 通常百度上没有什么有价值的内容, 不妨添加一些开发者QQ群询问, 一些热心的开发者会回答你!  
 但是你要区分清楚 Java基础 和 Bukkit开发! 但是如果你有百思不得其解的问题, 不妨还是问一下, 问问题是成长的最快途径.  
+
+# 了解JavaDoc
+
+我们在开发插件时, 必须要用到JavaDoc. 我们可以通过JavaDoc查询到BukkitAPI都有哪些API, 以及使用方法.  
+
+最新版本JavaDoc网址: https://hub.spigotmc.org/javadocs/spigot/index.html?overview-summary.html  
+旧版本JavaDoc网址(1.7.10): http://jd.bukkit.org/  
+
+![](pics/0-1-pic1.jpg)
