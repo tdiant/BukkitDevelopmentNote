@@ -198,7 +198,7 @@ p.openInventory(inv);
 @EventHandler
 public void onInventoryClick(InventoryClickEvent e){
 	//从这里可以看出来, 标题不是随意设置的, 我们经常用标题作为区分GUI的标志
-	if(e.getInventory.getTitle().equals("URARA!"))
+	if(e.getView().getTitle().equals("URARA!"))
 		e.setCancelled(true); //这样玩家就没办法拿出来物品了
 		
 	//getRawSlot获得玩家点击的格子编号
