@@ -1,7 +1,6 @@
 * [欢迎](README.md)
 * BukkitAPI入门
-  - 开始
-    - [第一节 准备](brm-0-1.md)
+  - [开始](brm-0-1.md)
   - 第一单元 基础
     - [第一节 最简单的插件](brm-1-1.md)
     - [第二节 事件与事件监听](brm-1-2.md)
@@ -25,7 +24,7 @@
     - 第四节 占位 PlaceholderAPI(未完成)
 * 插件开发进阶(未完成)
   - 第一单元 NMS与OBC
-    - [第一节 NMS与OBC的基本概念(未完成)](bsd-1-1.md)
+    - [第一节 NMS与OBC的基本概念](bsd-1-1.md)
 	- 第二节 发包
 	  - PART1 利用ProtocolLib发包(未完成)
 	  - PART2 不利用ProtocolLib发包(未完成)
