@@ -13,6 +13,7 @@
 这里我们以创建上文的`RuaEvent`事件举例, 我们的大致思路是这样的:  
 1. 创建一个`RuaEvent`类.  
 2. 监听玩家聊天, 判断玩家聊天内容, 如果是`rua`, 让Bukkit触发我们新建的`RuaEvent`对象.  
+3. 向玩家发送消息`rua`.
 
 我们就先新建一个类`RuaEvent`, 让其继承`org.bukkit.event.Event`类. 在该类中写下这些固定代码:  
 ```java
@@ -33,7 +34,7 @@ HandlerList储存与监听本事件的监听器相关的对象.
 这也意味着Bukkit中事件的触发本质是遍历被触发事件的HandlerList, 调用监听器对应方法.
 
 > 假如我想让服务器里的玩家触发的所有事件, 已知所有的诸如PlayerJoinEvent等玩家事件都继承了PlayerEvent, 那我可以监听PlayerEvent事件吗?  
-> 答案是不可以, 因为PlayerEvent的getHandlerList方法永远会返回null, 结合上面的内容, 你应该可以意识到PlayerEvent是无法正常工作的吧.  
+> 答案是不可以, 因为`PlayerEvent`没有`getHandlerList()`方法, 结合上面的内容, 你应该可以意识到PlayerEvent是无法正常工作的吧.  
 > 所以你只能把所有Player开头的Event监听一个遍才可以达到目的!  
 
 现在我们的自定义事件雏形已经完成. 你可以根据自己的需要添加相关代码!  
@@ -109,8 +110,8 @@ public class RuaEvent extends Event implements Cancellable{
 ```java
 @EventHandler
 public void onPlayerChat_DEMO1 (PlayerChatEvent e){ //如果RuaEvent是个不可取消事件
-	if(e.getMessage().equals("rua"))
-		Bukkit.getServer().getPluginManager().callEvent(new RuaEvent(e.getPlayer())); //触发事件
+	if(e.getMessage().equals("rua")) Bukkit.getServer().getPluginManager().callEvent(new RuaEvent(e.getPlayer())); //触发事件
+	e.sendMessage("Rua!");
 }
 ```
 
@@ -121,9 +122,12 @@ public void onPlayerChat_DEMO1 (PlayerChatEvent e){ //如果RuaEvent是个不可
 public void onPlayerChat_DEMO1 (PlayerChatEvent e){ //如果RuaEvent是个可取消事件
 	if(e.getMessage().equals("rua")){
 		RuaEvent event = new RuaEvent(e.getPlayer());
-		Bukkit.getServer().getPluginManager().callEvent();
-		if(event.isCancelled()) //这里加判断即可
-			e.setCancelled(true);
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		if(event.isCancelled()) {
+		    return; //事件被取消, 终止事件的处理
+		}
+		// 事件未取消对应的逻辑
+		e.sendMessage("Rua!");
 	}
 }
 ```
