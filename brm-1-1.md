@@ -127,3 +127,14 @@ p.sendMessage(str); //发给玩家的还是: &4哈&c哈&6哈.....
 String str_finish = ChatColor.translateAlternateColorCodes('&',str); //处理好的字符串
 p.sendMessage(str_finish); //发给玩家就是彩色的
 ```
+
+
+> 提示：你可以使用  
+> ```java 
+> import static org.bukkit.ChatColor.*;
+> ```
+> 来导入`ChatColor`中的所有枚举。接下来你就可以更方便地写颜色代码：  
+> ```java
+> String str = RED + "/test help" + GREY + "    -    " + WHITE + "显示帮助菜单。";
+> ```
+
