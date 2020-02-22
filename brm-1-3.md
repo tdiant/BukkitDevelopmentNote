@@ -13,7 +13,7 @@ Bukkit.getPlayerExact("PlayerName");
 
 > 如果你翻看API, 你会发现存在`Bukkit.getPlayer("PlayerName");`这样的方法来获取.   
 > 但是这个方法会“模糊地”获取玩家.    
-> 假如服务器内有abc和ab这两个玩家, 如果你想获取abc的Player对象, 万一abc不在线, 你Bukkit.getPlayer("abc");返回的Player对象, 很有可能是ab的, 而不是abc的.   
+> 假如服务器内有abc和ab这两个玩家, 如果你想获取ab的Player对象, 万一ab不在线, 你`Bukkit.getPlayer("ab");`返回的Player对象, 很有可能是abc的, 而不是ab的.   
 
 `Player`是`Entity`的子类. 这意味着`Player`对象是一个确切的实体，那么如果玩家下线，它在服务器内对应的实体便消失，也就不存在所谓的`Player`对象了.  
 因此，对一个下线的玩家使用`getPlayer`或`getPlayerExact`方法获取`Player`对象是无意义的. 这会得到null.  
