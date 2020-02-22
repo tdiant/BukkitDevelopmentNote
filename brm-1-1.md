@@ -68,3 +68,53 @@ author: tdiant
 
 ![](pics/1-1-pic2.png)
 
+# BukkitAPI中的Logger
+
+## Logger
+*这里只是简要提及, 不详细介绍, 只需要知道有这件事即可.*
+
+BukkitAPI“修改”了我们常用的sout (即`System.out.println`), 将其“引入”了BukkitAPI提供的Logger.  
+只有通过Logger输出的文本信息才能记录在服务端生成的log文件中.
+
+在BukkitAPI插件开发时, 我们通常不用sout输出想往后台输出给服主看的文本信息, 而应用Logger.  
+主类有`getLogger()`方法, 可以利用这个方法获得Logger.  
+例如这样:
+
+```java
+public class HelloWorld extends JavaPlugin {
+    @Override  
+    public void onEnable(){  
+        this.getLogger().info("Hello World");
+    }  
+  
+    @Override      
+    public void onDisable(){}  
+}  
+```
+
+这样输出信息的方式与sout相比最主要的区别是:
+
+```java
+this.getLogger().info(ChatColor.GREEN + "Hello World"); //这样往后台输出的是绿色的Hello World
+System.out.println(ChatColor.GREEN + "Hello World"); //这样往后台输出的是: §2Hello World, 而不是绿色的字
+```
+
+## ChatColor
+在所有能发彩色文字的地方, 你可以直接使用双s (即`§`符号, Windows系统下按住键盘Alt键, 在数字键盘区域依次按下0167后松开Alt键即可输入该字符) + 对应颜色代码(可以在Minecraft Wiki上查到)代表颜色.  
+颜色是可以混用的: `§4比§c如§6这§2样`.
+
+在开发中, 你不必这样, `ChatColor`可以替代.  
+
+```java
+p.sendMessage(ChatColor.RED+"你" + ChatColor.GREEN+"好"+ ChatColor.YELLOW + "!");
+```
+
+这样就可以发送一个 红色的“你”, 绿色的“好”, 黄色的感叹号 给玩家.  
+
+后面了解配置文件的操作后, 一些插件允许服主在设定一些提示语时用`&`符号代替`§`, 插件处理这样的文本信息时, 可以这样处理成带颜色的字符串:  
+```java
+String str = "&4哈&c哈&6哈....."; //待处理字符串
+p.sendMessage(str); //发给玩家的还是: &4哈&c哈&6哈.....
+String str_finish = ChatColor.translateAlternateColorCodes('&',str); //处理好的字符串
+p.sendMessage(str_finish); //发给玩家就是彩色的
+```
