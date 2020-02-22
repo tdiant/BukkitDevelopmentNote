@@ -92,12 +92,21 @@ public class HelloWorld extends JavaPlugin {
 }  
 ```
 
-这样输出信息的方式与sout相比最主要的区别是:
+这样输出信息的方式与sout相比最主要的区别是, 如果你的插件`plugin.yml`里的名称为`Test`那么:
 
 ```java
-this.getLogger().info(ChatColor.GREEN + "Hello World"); //这样往后台输出的是绿色的Hello World
-System.out.println(ChatColor.GREEN + "Hello World"); //这样往后台输出的是: §2Hello World, 而不是绿色的字
+this.getLogger().info("Hello World");
+System.out.println("Hello World");
 ```
+
+输出的结果是
+
+```
+[23:33:33 INFO]: 测试
+[23:33:33 INFO]: [Test] 测试
+```
+
+
 
 ## ChatColor
 在所有能发彩色文字的地方, 你可以直接使用双s (即`§`符号, Windows系统下按住键盘Alt键, 在数字键盘区域依次按下0167后松开Alt键即可输入该字符) + 对应颜色代码(可以在Minecraft Wiki上查到)代表颜色.  
