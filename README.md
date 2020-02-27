@@ -1,23 +1,52 @@
 # 欢迎
 
-<div>
-    <a href="/#/_sidebar.md"><div style="width:25%;height:50px;background:#3388ff;border-style:none solid none none;border-color:white;border-width:2px;float:left;">
-        <span style="font-size:25px;margin-top:10px;position:absolute;text-align:center;color:white;float:left;margin-left:10px;">目录</span>
-        <span style="font-size:25px;margin-top:10px;text-align:center;color:white;float:right;margin-right:10px;">   <span class="fas fa-align-justify"></span></span>
-    </div></a>
-    <a href="https://github.com/tdiant/BukkitDevelopmentNote"><div style="width:25%;height:50px;background:#3388ff;border-style:none solid none none;border-color:white;border-width:2px;float:left">
-        <span style="font-size:25px;margin-top:10px;position:absolute;text-align:center;color:white;float:left;margin-left:10px;">Git</span>
-        <span style="font-size:25px;margin-top:10px;text-align:center;color:white;float:right;margin-right:10px;">   <span class="fas fa-code-branch"></span></span>
-    </div></a>
-    <a href="/#/README-CONTRIBUTE.md"><div style="width:25%;height:50px;background:#3388ff;border-style:none solid none none;border-color:white;border-width:2px;float:left">
-        <span style="font-size:25px;margin-top:10px;position:absolute;text-align:center;color:white;float:left;margin-left:10px;">贡献</span>
-        <span style="font-size:25px;margin-top:10px;text-align:center;color:white;float:right;margin-right:10px;">   <span class="fas fa-pen-nib"></span></span>
-    </div></a>
-    <a href="/#/README-DONATE.md"><div style="width:25%;height:50px;background:#3388ff;float:left">
-        <span style="font-size:25px;margin-top:10px;position:absolute;text-align:center;color:white;float:left;margin-left:10px;">赞助</span>
-        <span style="font-size:25px;margin-top:10px;text-align:center;color:white;float:right;margin-right:10px;">   <span class="fas fa-trophy"></span></span>
-    </div></a>
+<style>
+.button {
+	width: 24%;
+	height: 50px;
+	display: inline-block;
+	border-right: solid white;
+	background: #3388ff;
+}
+@media(max-width:425px){
+.button {
+	width: 100%;
+	display: block;
+	border-top: solid white;
+}
+}
+.button > a > div {
+	font-size:1.4em;
+	color: white;
+	padding: 10px;
+}
+.button > a > div > span:nth-child(1){
+	float:left;
+}
+.button > a > div > span:nth-child(2){
+	float:right;
+}
+</style>
+<div style=" width: 100%; display:inline-block;">
+
+    <div class="button"><a href="/#/_sidebar.md"><div>
+        <span>目录</span>
+        <span>   <span class="fas fa-align-justify"></span></span>
+    </div></a></div>
+    <div class="button"><a href="https://github.com/tdiant/BukkitDevelopmentNote"><div>
+        <span>Git</span>
+        <span>   <span class="fas fa-code-branch"></span></span>
+    </div></a></div>
+    <div class="button"><a href="/#/README-CONTRIBUTE.md"><div>
+        <span>贡献</span>
+        <span>   <span class="fas fa-pen-nib"></span></span>
+    </div></a></div>
+    <div class="button"><a href="/#/README-DONATE.md"><div>
+        <span>赞助</span>
+        <span>   <span class="fas fa-trophy"></span></span>
+    </div></a></div>
 </div>
+
 
 感谢您的访问.  
 本站旨在为BukkitAPI开发者提供清晰的入门资料.  
