@@ -30,5 +30,5 @@
 * 插件开发实战
   - [最简单的登录插件 StupidLogin](brm/brm-1-6.md)
 * 神奇的异次元
-  - [Conversation API](rua-1.md)
+  - [Conversation API](rua/rua-1.md)
   - 插件使用统计的接入(未完成)
