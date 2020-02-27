@@ -20,7 +20,7 @@ BakaRua test = new BakaRua("tdiant", "hello!!");
 ```
 
 我们想把test保存在配置文件里怎么办?  
-很遗憾,`getConfig().set("demo",test);`是行不通的.
+很遗憾,`getConfig().set("demo",test);`是行不通的. 你会发现`getConfig.get("demo")`根本得不到这个对象.
 
 > 哪些东西可以直接set保存呢?
 > 类似getInt, 所有拥有get方法的类型都可以直接保存. (包括List<String>)

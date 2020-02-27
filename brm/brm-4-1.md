@@ -1,6 +1,6 @@
-# NMS与OBC的基本概念
+# 认识NMS与OBC
 
-# 简述NMS与OBC
+# 简述
 
 NMS和OBC是社区中通常普遍的叫法, 也就是俗称.  
 
