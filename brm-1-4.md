@@ -12,7 +12,7 @@
 
 *目前为止, 配置API只有YAML配置功能可用. 这也是大多数插件为什么配置文件是YAML文件的原因.  
 在本文中, 我们也将使用YAML配置API.*   
-*现在的配置API的类均在 `org.bukkit.configuration` 和 `org.bukkit.configuration.file` 包中. 在早期版本(MC 1.1以及之前), 这些东西都在`org.bukkit.util.configuration`包, 而并非上面的这两个包.*   
+*现在的配置API的类均在 `org.bukkit.configuration` 和 `org.bukkit.configuration.file` 包中.*   
 
 # 了解YAML文件
 
@@ -52,7 +52,7 @@ Data:
 
 ## 数据类型
 
-通常可以用配置文件存储一些基本类型(int、double、boolean)、String、StringList和被序列化的对象.  
+通常可以用配置文件存储一些基本类型(int、double、boolean)、String、数组和可被序列化的对象.  
 
 Bukkit中给出的一些对象有些是可以直接存进配置文件的, 这需要看这个类是不是实现了`ConfigurationSerializable`接口. 例如, `Player`类型的对象就可以被直接存入配置文件, 因为查阅JavaDoc后可以发现它实现了`ConfigurationSerializable`.  
 
@@ -62,7 +62,7 @@ Bukkit中给出的一些对象有些是可以直接存进配置文件的, 这需
 
 在上面的配置文件中, 配置文件里储存了:  
 1. 存储了一个`boolean`类型的值(`Settings.DebugMode`键).  
-2. 存储了一些数字类型的值(存了好几个).  
+2. 存储了一些数字类型的值.  
 3. 存储了一个`String`字符串(`Data.player1.NickName`键).  
 4. 存储了一个`StringList`(YAML里的`StringList`就是Java中的`List<String>`, 例如`Data.player1.Title`键).  
 
@@ -82,9 +82,9 @@ Settings:
 
 请记住这句话. 我们可以根据这个原理推导出, 如果你想删除一个已经存在的键, 那就是把这个键的值设置为null.
 
-# 操作配置文件
+# 操作默认配置文件
 
-这里的配置文件指的是`config.yml`文件.  
+这里的默认配置文件指的是`config.yml`文件.  
 首先我们需要准备一个默认的`config.yml`文件. 这个文件会在插件检测到`plugins\插件名`文件夹下没有`config.yml`文件时被放入该文件夹中.  
 在插件jar文件里, 默认的`config.yml`文件要与`plugin.yml`文件处于同一目录下, 所以创建默认`config.yml`的方法与创建`plugin.yml`文件的操作方法一致. 在这里我们在默认`config.yml`文件中存入我们一开始举的例子.
 
@@ -139,12 +139,12 @@ public class HelloWorld extends JavaPlugin implements Listener{
         e.getPlayer().sendMessage("你的积分是: " + score);
     }
 
-//如果你真的要写做个插件, 一定要小心, 判断一下BlockBrekaEvent是不是被其他插件取消掉了. 这里只是个例子, 并没有去判断
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e){
+        if (e.isCancelled()) return; //判断此事件是不是被其它插件取消掉了
         if(e.getBlock().getType() == Material.STONE){ //判断类型, 是石头
             String key = "Data." + e.getPlayer().getName() + ".Score";
-            int score = getConfig().contains(key)?getConfig().getInt(key):0; //这是获取玩家当前积分, 这么写是因为写个if占得行数太多, 如果不理解, 建议写成一开始我们提到的if
+            int score = getConfig().contains(key)?getConfig().getInt(key):0; //获取玩家当前积分, 如果从未记录此玩家的积分数据则默认为0
             getConfig().set(key,score + 10); //挖一个石头加10分
 
             //但是写到这里要小心！你只是修改了内存上的数据, 你没有修改硬盘上的config.yml文件里的数据！
@@ -154,11 +154,11 @@ public class HelloWorld extends JavaPlugin implements Listener{
 }
 ```
 
-由此, 你需要小心, **getConfig()的内容是内存上的内容, 修改它并没有修改硬盘上的内容, 关服就会消失, 因此要注意保存！**
+由此, 你需要小心, **getConfig()的内容是内存上的内容, 修改它并没有修改硬盘上的内容, 关服/重载后就会消失, 因此要注意保存！**
 
 `set`不区分数据类型是什么, 存储数据全部都用`set`方法. `set`不管这个键在配置文件里存不存在, 都会写入这个数据.
 
-还记得我们一开始说的"YAML里所有不存在的键, 值是null"吗? 如果你想删除掉`player3`的数据, 那你应该写成:  
+还记得我们一开始说的`YAML里所有不存在的键, 值是null`吗? 如果你想删除掉`player3`的数据, 那你应该写成:  
 
 ```java
 getConfig().set("Data.player3",null);
@@ -190,14 +190,14 @@ this.saveResource("test\biu.yml", false); //生成默认biu.yml, 放在test文�
 ## 基本读写与保存
 下面是一个读写与保存的示例:
 ```java
-//读取
-//this.getDataFolder()方法返回插件配置文件夹的File对象
+// 读取配置文件
+// this.getDataFolder()方法返回插件配置文件夹的File对象
 File biuConfigFile = new File(this.getDataFolder(), "biu.yml");
-// 对于在插件配置文件夹创建一个新的文件夹存放配置文件
+// 也可以在插件配置文件夹创建一个新的文件夹以存放配置文件
 // File biuConfigFile = new File(this.getDataFolder(), "test/biu.yml");
 FileConfiguration biuConfig = YamlConfiguration.loadConfiguration(biuConfigFile);
 biuConfigFile.get.......
-biuConfigFile.set....... //set完了记得保存!
-//保存
+biuConfigFile.set.......
+// set完了记得保存!
 biuConfig.save(biuConfigFile);
 ```
