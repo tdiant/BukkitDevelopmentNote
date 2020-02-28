@@ -1,40 +1,42 @@
 # 欢迎
 
-<div style="width: 100%;">
-    <div class="rmd-button">
+<ul style="width: 100%; list-style: none; padding: 0px;">
+    <li class="rmd-button" style="float: left; margin-right: 15px;">
         <a href="_sidebar.md">
             <div>
                 <span>目录</span>
                 <span>   <span class="fas fa-align-justify"></span></span>
             </div>
         </a>
-    </div>
-    <div class="rmd-button">
+    </li>
+    <li class="rmd-button" style="float: left; margin-right: 15px;">
         <a href="https://github.com/tdiant/BukkitDevelopmentNote">
             <div>
                 <span>Git</span>
                 <span>   <span class="fas fa-code-branch"></span></span>
             </div>
         </a>
-    </div>
-    <div class="rmd-button">
+    </li>
+    <li class="rmd-button" style="float: left; margin-right: 15px;">
         <a href="README-CONTRIBUTE.md">
             <div>
                 <span>贡献</span>
                 <span>   <span class="fas fa-pen-nib"></span></span>
             </div>
         </a>
-    </div>
-    <div class="rmd-button">
+    </li>
+    <li class="rmd-button" style="float: left;">
         <a href="README-DONATE.md">
             <div>
                 <span>赞助</span>
               <span>   <span class="fas fa-trophy"></span></span>
             </div>
         </a>
-    </div>
-</div>
+    </li>
+</ul>
 
+<br />
+<br />
 
 感谢您的访问.  
 本站旨在为BukkitAPI开发者提供清晰的入门资料.  
