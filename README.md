@@ -2,7 +2,7 @@
 
 <div style="width: 100%;">
     <div class="rmd-button">
-        <a href="/#/_sidebar.md">
+        <a href="_sidebar.md">
             <div>
                 <span>目录</span>
                 <span>   <span class="fas fa-align-justify"></span></span>
@@ -18,7 +18,7 @@
         </a>
     </div>
     <div class="rmd-button">
-        <a href="/#/README-CONTRIBUTE.md">
+        <a href="README-CONTRIBUTE.md">
             <div>
                 <span>贡献</span>
                 <span>   <span class="fas fa-pen-nib"></span></span>
@@ -26,7 +26,7 @@
         </a>
     </div>
     <div class="rmd-button">
-        <a href="/#/README-DONATE.md">
+        <a href="README-DONATE.md">
             <div>
                 <span>赞助</span>
               <span>   <span class="fas fa-trophy"></span></span>
