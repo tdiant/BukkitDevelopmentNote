@@ -1,50 +1,38 @@
 # 欢迎
 
-<style>
-.button {
-	width: 24%;
-	height: 50px;
-	display: inline-block;
-	border-right: solid white;
-	background: #3388ff;
-}
-@media(max-width:425px){
-.button {
-	width: 100%;
-	display: block;
-	border-top: solid white;
-}
-}
-.button > a > div {
-	font-size:1.4em;
-	color: white;
-	padding: 10px;
-}
-.button > a > div > span:nth-child(1){
-	float:left;
-}
-.button > a > div > span:nth-child(2){
-	float:right;
-}
-</style>
-<div style=" width: 100%; display:inline-block;">
-
-    <div class="button"><a href="/#/_sidebar.md"><div>
-        <span>目录</span>
-        <span>   <span class="fas fa-align-justify"></span></span>
-    </div></a></div>
-    <div class="button"><a href="https://github.com/tdiant/BukkitDevelopmentNote"><div>
-        <span>Git</span>
-        <span>   <span class="fas fa-code-branch"></span></span>
-    </div></a></div>
-    <div class="button"><a href="/#/README-CONTRIBUTE.md"><div>
-        <span>贡献</span>
-        <span>   <span class="fas fa-pen-nib"></span></span>
-    </div></a></div>
-    <div class="button"><a href="/#/README-DONATE.md"><div>
-        <span>赞助</span>
-        <span>   <span class="fas fa-trophy"></span></span>
-    </div></a></div>
+<div style="width: 100%;">
+    <div class="rmd-button">
+        <a href="/#/_sidebar.md">
+            <div>
+                <span>目录</span>
+                <span>   <span class="fas fa-align-justify"></span></span>
+            </div>
+        </a>
+    </div>
+    <div class="rmd-button">
+        <a href="https://github.com/tdiant/BukkitDevelopmentNote">
+            <div>
+                <span>Git</span>
+                <span>   <span class="fas fa-code-branch"></span></span>
+            </div>
+        </a>
+    </div>
+    <div class="rmd-button">
+        <a href="/#/README-CONTRIBUTE.md">
+            <div>
+                <span>贡献</span>
+                <span>   <span class="fas fa-pen-nib"></span></span>
+            </div>
+        </a>
+    </div>
+    <div class="rmd-button">
+        <a href="/#/README-DONATE.md">
+            <div>
+                <span>赞助</span>
+              <span>   <span class="fas fa-trophy"></span></span>
+            </div>
+        </a>
+    </div>
 </div>
 
 
