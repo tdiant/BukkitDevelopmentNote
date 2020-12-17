@@ -1,12 +1,3 @@
----
-home: true
-heroText: Bukkit Dev Note
-tagline:   
-actionText: 开始 →
-actionLink: /home/
-footer: Apache License 2.0 | 2018-2020 | tdiant&BakaRinya
----
-
 感谢您的访问.  
 本站旨在为BukkitAPI开发者提供清晰的入门资料.
 
@@ -24,5 +15,5 @@ footer: Apache License 2.0 | 2018-2020 | tdiant&BakaRinya
 ## 联系方式
 
 您可以在GitHub仓库中发起issue.  
-E-Mail: BakaRinya@qq.com  
+E-Mail: i@tdiant.net    
 不一定及时回复.
